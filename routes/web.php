@@ -21,5 +21,5 @@ use App\Http\Controllers\LoginController;
 Route::post('/login', [LoginController::class, 'authenticate']);
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/logout', [LoginController::class, 'logout']);
+    Route::post('/logout', [LoginController::class, 'logout']);
 });

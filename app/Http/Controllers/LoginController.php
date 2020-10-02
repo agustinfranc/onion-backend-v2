@@ -31,4 +31,15 @@ class LoginController extends Controller
             return response()->json(Auth::user());
         }
     }
+
+    public function logout(Request $request)
+    {
+        if (Auth::user()) {
+            return response()->json(Auth::logout());
+        }
+    }
+
+    /**
+     * To see more Auth methods go to: vendor\laravel\framework\src\Illuminate\Support\Facades\Auth.php
+     */
 }
