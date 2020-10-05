@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ProductController;
 use App\Models\Commerce;
 use App\Models\Product;
 
@@ -21,6 +22,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('/auth')->group(function () {
         Route::get('/me', [LoginController::class, 'me']);
     });
+
+    Route::get('/commerce/{commerce}/products', [ProductController::class, 'index']);
+
+    Route::get('/commerce/{commerce}/products/{product}', [ProductController::class, 'show']);
 });
 
 Route::get('/commerces', function () {
