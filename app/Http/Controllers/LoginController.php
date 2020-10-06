@@ -22,7 +22,7 @@ class LoginController extends Controller
             return response()->json(Auth::user());
         }
 
-        return response()->json(['error' => 'User not found']);
+        return response()->json(['error' => 'User not found'], 401);
     }
 
     public function me(Request $request)
