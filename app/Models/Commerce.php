@@ -22,4 +22,9 @@ class Commerce extends Model
         return $this->belongsToMany('App\Models\Subrubro');
     }
 
+    public function users()
+    {
+        return $this->belongsToMany('App\Models\User');
+    }
+
 }
