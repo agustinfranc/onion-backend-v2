@@ -23,4 +23,13 @@ class ProductController extends Controller
 
         return Product::with(['subrubro.rubro'])->whereCommerceId($commerce->id)->find($product->id);
     }
+
+    public function getByFirstCommerce(Request $request)
+    {
+        //! obtener primer comercio del usuario logueado
+
+        $commerce = Commerce::first();
+
+        return Product::with(['subrubro.rubro'])->whereCommerceId($commerce->id)->get();
+    }
 }
