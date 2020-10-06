@@ -21,11 +21,20 @@ use App\Models\Product;
 Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('/auth')->group(function () {
         Route::get('/me', [LoginController::class, 'me']);
+
+        Route::get('/commerces', function () {
+            return Commerce::all();
+        });
     });
 
-    Route::get('/commerce/{commerce}/products', [ProductController::class, 'index']);
+    Route::prefix('/commerce')->group(function () {
+        Route::get('/first/products', [ProductController::class, 'getByFirstCommerce']);
 
-    Route::get('/commerce/{commerce}/products/{product}', [ProductController::class, 'show']);
+        Route::get('/{commerce}/products', [ProductController::class, 'index']);
+
+        Route::get('/{commerce}/products/{product}', [ProductController::class, 'show']);
+    });
+
 });
 
 Route::get('/commerces', function () {
