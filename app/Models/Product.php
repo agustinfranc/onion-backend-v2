@@ -50,4 +50,16 @@ class Product extends Model
     {
         return $query->where('commerce_id', '=', $commerce->id);
     }
+
+    /**
+     * Scope a query to only include certain commerce by authenticated user
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  \App\Models\Commerce  $commerce
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeCommerceByUser($query)
+    {
+        //return $query->where('commerce_id', '=', $commerce->id);
+    }
 }
