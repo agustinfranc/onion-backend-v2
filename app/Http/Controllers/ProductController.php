@@ -26,9 +26,7 @@ class ProductController extends Controller
 
     public function getByFirstCommerce(Request $request)
     {
-        //! obtener primer comercio del usuario logueado
-
-        $commerce = Commerce::first();
+        $commerce = Commerce::ofUser()->first();
 
         return Product::with(['subrubro.rubro'])->whereCommerceId($commerce->id)->get();
     }

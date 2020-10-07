@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
         \App\Models\User::factory(10)->create();
 
         $this->call(CommerceSeed::class);
+        $this->call(CommerceUserSeeder::class);
         $this->call(RubroSeed::class);
         $this->call(CommerceRubroSeeder::class);
         $this->call(SubrubroSeed::class);
