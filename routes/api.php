@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CommerceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
@@ -22,24 +23,21 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('/auth')->group(function () {
         Route::get('/me', [LoginController::class, 'me']);
 
-        Route::get('/commerces', function () {
-            return Commerce::all();
+        Route::prefix('/commerces')->group(function () {
+            Route::get('/', [CommerceController::class, 'index']);
+
+            Route::get('/first/products', [ProductController::class, 'getByFirstCommerce']);
+
+            Route::get('/{commerce}/products', [ProductController::class, 'index']);
+
+            Route::get('/{commerce}/products/{product}', [ProductController::class, 'show']);
         });
     });
 
-    Route::prefix('/commerce')->group(function () {
-        Route::get('/first/products', [ProductController::class, 'getByFirstCommerce']);
-
-        Route::get('/{commerce}/products', [ProductController::class, 'index']);
-
-        Route::get('/{commerce}/products/{product}', [ProductController::class, 'show']);
-    });
 
 });
 
-Route::get('/commerces', function () {
-    return Commerce::all();
-});
+Route::get('/commerces', [CommerceController::class, 'index']);
 
 Route::group(['prefix' => '/{commerceName}'], function () {
 
