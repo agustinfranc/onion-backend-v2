@@ -29,9 +29,14 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/first/products', [ProductController::class, 'getByFirstCommerce']);
 
             Route::get('/{commerce}/products', [ProductController::class, 'index']);
-
-            Route::get('/{commerce}/products/{product}', [ProductController::class, 'show']);
         });
+
+        Route::prefix('/products')->group(function () {
+            Route::get('/{product}', [ProductController::class, 'show']);
+
+            Route::put('/{product}', [ProductController::class, 'update']);
+        });
+
     });
 
 
