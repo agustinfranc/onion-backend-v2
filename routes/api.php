@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\CommerceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ProductController;
 use App\Models\Commerce;
 use App\Models\Product;
 
@@ -20,12 +22,29 @@ use App\Models\Product;
 Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('/auth')->group(function () {
         Route::get('/me', [LoginController::class, 'me']);
+
+        Route::prefix('/commerces')->group(function () {
+            Route::get('/', [CommerceController::class, 'index']);
+
+            Route::get('/first/products', [ProductController::class, 'getByFirstCommerce']);
+
+            Route::get('/{commerce}/products', [ProductController::class, 'index']);
+        });
+
+        Route::prefix('/products')->group(function () {
+            Route::get('/{product}', [ProductController::class, 'show']);
+
+            Route::put('/{product}', [ProductController::class, 'update']);
+
+            Route::delete('/{product}', [ProductController::class, 'delete']);
+        });
+
     });
+
+
 });
 
-Route::get('/commerces', function () {
-    return Commerce::all();
-});
+Route::get('/commerces', [CommerceController::class, 'index']);
 
 Route::group(['prefix' => '/{commerceName}'], function () {
 

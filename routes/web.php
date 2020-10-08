@@ -20,6 +20,8 @@ use App\Http\Controllers\LoginController;
 
 Route::post('/login', [LoginController::class, 'authenticate']);
 
+Route::post('/logout', [LoginController::class, 'logout']);
+
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/logout', [LoginController::class, 'logout']);
+    //
 });
