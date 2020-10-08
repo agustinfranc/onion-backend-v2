@@ -69,7 +69,7 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         //! usar esta forma
-		//$product->fill($request);
+        //$product->fill($request);
 
         $product->code = $request->post('code');
         $product->name = $request->post('name');
@@ -90,6 +90,10 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $product = Product::findOrFail($id);
+
+        $product->delete();
+
+        return response(true);
     }
 }
