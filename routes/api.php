@@ -26,8 +26,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::prefix('/commerces')->group(function () {
             Route::get('/', [CommerceController::class, 'index']);
 
-            Route::get('/first/products', [ProductController::class, 'getByFirstCommerce']);
-
             Route::get('/{commerce}/products', [ProductController::class, 'index']);
         });
 
@@ -37,6 +35,8 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::put('/{product}', [ProductController::class, 'update']);
 
             Route::delete('/{product}', [ProductController::class, 'destroy']);
+
+            Route::post('/{product}/upload', [ProductController::class, 'upload']);
         });
 
     });
