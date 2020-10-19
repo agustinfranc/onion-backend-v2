@@ -21,24 +21,15 @@ use App\Models\Product;
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('/auth')->group(function () {
-        Route::get('/me', [LoginController::class, 'me']);
+        Route::get('/me', [LoginController::class, 'me'])->name('me');
 
-        Route::prefix('/commerces')->group(function () {
-            Route::get('/', [CommerceController::class, 'index']);
+        Route::apiResource('commerces', CommerceController::class)->only([
+            'index'
+        ]);
 
-            Route::get('/{commerce}/products', [ProductController::class, 'index']);
-        });
+        Route::post('/products/{product}/upload', [ProductController::class, 'upload'])->name('products.upload');
 
-        Route::prefix('/products')->group(function () {
-            Route::get('/{product}', [ProductController::class, 'show']);
-
-            Route::put('/{product}', [ProductController::class, 'update']);
-
-            Route::delete('/{product}', [ProductController::class, 'destroy']);
-
-            Route::post('/{product}/upload', [ProductController::class, 'upload']);
-        });
-
+        Route::apiResource('commerces.products', ProductController::class)->shallow();
     });
 
 
