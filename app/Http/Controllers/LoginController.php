@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Commerce;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,16 +20,22 @@ class LoginController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
-            return response()->json(Auth::user());
+            $rsp = Auth::user();
+            $rsp->commerces = Commerce::ofUser()->get();
+
+            return response()->json($rsp);
         }
 
-        return response()->json(['error' => 'User not found'], 401);
+        return response()->json(['error' => 'User not found']);
     }
 
     public function me(Request $request)
     {
         if (Auth::user()) {
-            return response()->json(Auth::user());
+            $rsp = Auth::user();
+            $rsp->commerces = Commerce::ofUser()->get();
+
+            return response()->json($rsp);
         }
     }
 

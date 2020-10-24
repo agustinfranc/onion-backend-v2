@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Commerce;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Illuminate\Http\File;
 
 class ProductController extends Controller
 {
@@ -19,19 +22,6 @@ class ProductController extends Controller
     {
         //! no se porque arroja error
         //return Product::commerce($commerce)->with(['subrubro.rubro'])->get();
-
-        return Product::with(['subrubro.rubro'])->whereCommerceId($commerce->id)->get();
-    }
-
-    /**
-     * Display a listing of the resource of authenticated user
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function getByFirstCommerce(Request $request)
-    {
-        $commerce = Commerce::ofUser()->first();
 
         return Product::with(['subrubro.rubro'])->whereCommerceId($commerce->id)->get();
     }
@@ -52,9 +42,10 @@ class ProductController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Commerce  $commerce
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Commerce $commerce)
     {
         //
     }
@@ -95,5 +86,32 @@ class ProductController extends Controller
         $product->delete();
 
         return response(true);
+    }
+
+    /**
+     * Upload a product image/avatar to storage
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Product  $product
+     * @return \Illuminate\Http\Response
+     */
+    public function upload(Request $request, Product $product)
+    {
+        // todo: create request to validate it (size, extension...)
+
+        if (!$request->hasFile('image') || !$request->file('image')->isValid()) {
+            return;
+        }
+
+        $path = $request->file('image')->store('images', 'public');
+
+        logger($path);
+
+        $product->avatar_dirname = env('APP_URL') . '/storage/' . $path;
+        $product->avatar = '';
+
+        $product->save();
+
+        return response($product);
     }
 }
