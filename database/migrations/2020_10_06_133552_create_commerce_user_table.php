@@ -16,8 +16,6 @@ class CreateCommerceUserTable extends Migration
         Schema::create('commerce_user', function (Blueprint $table) {
             $table->unsignedSmallInteger('commerce_id');
             $table->unsignedInteger('user_id');
-            $table->timestamps();
-            $table->softDeletes();
 
             $table->foreign('commerce_id')
                 ->references('id')
@@ -30,6 +28,8 @@ class CreateCommerceUserTable extends Migration
                 ->on('users')
                 ->onUpdate('cascade')
                 ->onDelete('restrict');
+
+            $table->unique(['commerce_id', 'user_id']);
         });
     }
 
