@@ -16,8 +16,6 @@ class CreateExtraProductTable extends Migration
         Schema::create('extra_product', function (Blueprint $table) {
             $table->unsignedInteger('extra_id');
             $table->unsignedInteger('product_id');
-            $table->timestamps();
-            $table->softDeletes();
 
             $table->foreign('extra_id')
                 ->references('id')
@@ -30,6 +28,9 @@ class CreateExtraProductTable extends Migration
                 ->on('products')
                 ->onUpdate('cascade')
                 ->onDelete('restrict');
+
+            $table->unique(['extra_id', 'product_id']);
+
         });
     }
 

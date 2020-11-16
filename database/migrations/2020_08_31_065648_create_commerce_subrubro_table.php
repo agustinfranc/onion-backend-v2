@@ -16,8 +16,6 @@ class CreateCommerceSubrubroTable extends Migration
         Schema::create('commerce_subrubro', function (Blueprint $table) {
             $table->unsignedSmallInteger('commerce_id');
             $table->unsignedSmallInteger('subrubro_id');
-            $table->timestamps();
-            $table->softDeletes();
 
             $table->foreign('commerce_id')
                 ->references('id')
@@ -30,6 +28,8 @@ class CreateCommerceSubrubroTable extends Migration
                 ->on('subrubros')
                 ->onUpdate('cascade')
                 ->onDelete('restrict');
+
+            $table->unique(['commerce_id', 'subrubro_id']);
         });
     }
 
