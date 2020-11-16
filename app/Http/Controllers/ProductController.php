@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Commerce;
 use App\Models\Product;
+use App\Models\Rubro;
+use App\Models\Subrubro;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -47,7 +49,46 @@ class ProductController extends Controller
      */
     public function store(Request $request, Commerce $commerce)
     {
-        //
+        $validatedData = $request->validate([
+            'code' => 'required',
+            'name' => 'required|max:255',
+            'rubro_id' => 'required|exists:rubros,id',
+            'subrubro_id' => 'sometimes|required|exists:subrubros,id',
+            'price' => 'numeric',
+            'description' => 'max:255',
+        ]);
+
+        $product = new Product();
+
+        $rubro = Rubro::find($validatedData['rubro_id']);
+
+        if (!array_key_exists('subrubro_id', $validatedData)) {
+
+            $subrubro = new Subrubro();
+            $subrubro->name = $request->post('subrubro');
+
+            $subrubro->rubro()->associate($rubro);
+
+            $subrubro->save();
+        }
+        else {
+            $subrubro = Subrubro::find($validatedData['subrubro_id']);
+        }
+
+        $subrubroId = $subrubro->id;
+
+        $product->subrubro()->associate($subrubro);
+
+        $commerce->rubros()->syncWithoutDetaching($validatedData['rubro_id']);
+        $commerce->subrubros()->syncWithoutDetaching($subrubroId);
+
+        $product->fill($validatedData);
+
+        $product->commerce()->associate($commerce);
+
+        $product->save();
+
+        return response()->json($product);
     }
 
     /**

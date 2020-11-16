@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\CommerceController;
+use App\Http\Controllers\GetCombos;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\RubroController;
 use App\Models\Commerce;
 use App\Models\Product;
 
@@ -30,6 +32,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/products/{product}/upload', [ProductController::class, 'upload'])->name('products.upload');
 
         Route::apiResource('commerces.products', ProductController::class)->shallow();
+
+        Route::apiResource('rubros', RubroController::class);
+
+        Route::get('/combos', GetCombos::class)->name('combos');
     });
 
 
