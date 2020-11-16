@@ -50,11 +50,11 @@ class ProductController extends Controller
     public function store(Request $request, Commerce $commerce)
     {
         $validatedData = $request->validate([
-            'code' => 'required',
+            'code' => 'required|unique:products',
             'name' => 'required|max:255',
             'rubro_id' => 'required|exists:rubros,id',
             'subrubro_id' => 'sometimes|required|exists:subrubros,id',
-            'price' => 'numeric',
+            'price' => '',
             'description' => 'max:255',
         ]);
 
