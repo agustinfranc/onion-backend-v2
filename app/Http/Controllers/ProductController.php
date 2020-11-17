@@ -22,10 +22,7 @@ class ProductController extends Controller
      */
     public function index(Request $request, Commerce $commerce)
     {
-        //! no se porque arroja error
-        //return Product::commerce($commerce)->with(['subrubro.rubro'])->get();
-
-        return Product::with(['subrubro.rubro'])->whereCommerceId($commerce->id)->get();
+        return Product::with(['subrubro.rubro','product_hashtags', 'product_prices'])->whereCommerceId($commerce->id)->get();
     }
 
     /**
