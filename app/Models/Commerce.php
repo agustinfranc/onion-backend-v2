@@ -45,10 +45,12 @@ class Commerce extends Model
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeOfUser($query)
+    public function scopeOfUser($query, $userId = null)
     {
-        return $query->whereHas('users', function (Builder $query) {
-            $query->whereId(Auth::user()->id);
+        if (!$userId && request()->user()) $userId = request()->user()->id;
+
+        return $query->whereHas('users', function (Builder $query) use ($userId) {
+            $query->whereId($userId);
         });
     }
 

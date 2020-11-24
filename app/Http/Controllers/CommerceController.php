@@ -11,8 +11,8 @@ class CommerceController extends Controller
 {
     public function index(Request $request)
     {
-        if (Auth::user()) {
-            return Commerce::ofUser()->get();
+        if ($request->user()) {
+            return Commerce::ofUser($request->user())->get();
         }
 
         return Commerce::all();

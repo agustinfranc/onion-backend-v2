@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
@@ -19,32 +20,31 @@ class LoginController extends Controller
      */
     public function authenticate(Request $request)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'email' => 'required|email',
             'password' => 'required',
             'device_name' => 'nullable',
         ]);
 
-        $credentials = $request->only('email', 'password');
+        $user = User::where('email', $validatedData['email'])->first();
 
-        if (!Auth::attempt($credentials)) {
-            return response()->json(['error' => 'User not found'], 401);
+        if (!$user || !Hash::check($validatedData['password'], $user->password)) {
+            return response()->json(['error' => 'Usuario y/o contraseña incorrectos'], 401);
         }
 
-        $user = User::find(Auth::user()->id);
-        $user->commerces = Commerce::ofUser()->get();
-        $user->token = $user->createToken($request->device_name ?? 'token-name')->plainTextToken;
+        $user->commerces = Commerce::ofUser($user->id)->get();
+        $user->token = $user->createToken($validatedData['device_name'] ?? 'token-name')->plainTextToken;
 
         return response()->json($user);
     }
 
     public function me(Request $request)
     {
-        if (!Auth::user()) {
+        if (!$request->user()) {
             return response()->json(['error' => 'error']);
         }
 
-        $rsp = Auth::user();
+        $rsp = $request->user();
         $rsp->commerces = Commerce::ofUser()->get();
 
         return response()->json($rsp);
@@ -52,14 +52,14 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
-        if (!Auth::user()) {
+        if (!$request->user()) {
             return response()->json(['error' => 'error']);
         }
 
-        $user = User::find(Auth::user()->id);
+        $user = User::find($request->user()->id);
         if ($user->currentAccessToken()) $user->currentAccessToken()->delete();
 
-        return response()->json(Auth::logout());
+        return response()->json($request->user()->currentAccessToken()->delete());
     }
 
     /**
