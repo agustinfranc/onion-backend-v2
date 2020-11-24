@@ -21,6 +21,8 @@ use App\Models\Product;
 |
 */
 
+Route::post('/token', [LoginController::class, 'authenticate'])->name('login');
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('/auth')->group(function () {
         Route::get('/me', [LoginController::class, 'me'])->name('me');

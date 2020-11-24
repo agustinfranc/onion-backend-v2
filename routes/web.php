@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\LoginController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,14 +13,6 @@ use App\Http\Controllers\LoginController;
 |
 */
 
-/* Route::get('/', function () {
+Route::get('/', function () {
     return view('welcome');
-}); */
-
-Route::post('/login', [LoginController::class, 'authenticate'])->name('login');
-
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-
-Route::middleware('auth:sanctum')->group(function () {
-    //
 });
