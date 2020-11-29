@@ -14,7 +14,7 @@ class RubroController extends Controller
      */
     public function index()
     {
-        $rubros = Rubro::with(['subrubros'])->get();
+        $rubros = Rubro::with(['subrubros.rubro'])->get();
 
         return $rubros;
     }
