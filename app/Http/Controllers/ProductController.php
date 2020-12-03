@@ -34,7 +34,7 @@ class ProductController extends Controller
      */
     public function show(Request $request, Product $product)
     {
-        return Product::with(['subrubro.rubro'])->find($product->id);
+        return Product::with(['subrubro.rubro','product_hashtags', 'product_prices'])->find($product->id);
     }
 
     /**
@@ -52,6 +52,7 @@ class ProductController extends Controller
             'rubro_id' => 'required|exists:rubros,id',
             'subrubro_id' => 'sometimes|required|exists:subrubros,id',
             'price' => '',
+            'subrubro' => '',
             'description' => 'max:255',
         ]);
 
@@ -62,7 +63,7 @@ class ProductController extends Controller
         if (!array_key_exists('subrubro_id', $validatedData)) {
 
             $subrubro = new Subrubro();
-            $subrubro->name = $request->post('subrubro');
+            $subrubro->name = $validatedData['subrubro'];
 
             $subrubro->rubro()->associate($rubro);
 
@@ -97,14 +98,24 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        //! usar esta forma
-        //$product->fill($request);
+        $validatedData = $request->validate([
+            'code' => 'required',
+            'name' => 'required|max:255',
+            'subrubro.id' => 'required|exists:subrubros,id',
+            'price' => '',
+            'description' => 'max:255',
+            'disabled' => 'boolean',
+        ]);
 
-        $product->code = $request->post('code');
-        $product->name = $request->post('name');
-        $product->description = $request->post('description');
-        $product->price = $request->post('price');
-        $product->disabled = $request->post('disabled');
+        $subrubro = Subrubro::find($validatedData['subrubro']['id']);
+        $rubroId = $subrubro->rubro->id;
+
+        $commerce = Commerce::find($product->commerce_id);
+
+        $commerce->rubros()->syncWithoutDetaching($rubroId);
+        $commerce->subrubros()->syncWithoutDetaching($validatedData['subrubro']['id']);
+
+        $product->fill($validatedData);
 
         $product->save();
 
