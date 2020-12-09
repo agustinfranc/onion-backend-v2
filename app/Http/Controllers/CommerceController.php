@@ -12,7 +12,7 @@ class CommerceController extends Controller
     public function index(Request $request)
     {
         if ($request->user()) {
-            return Commerce::ofUser($request->user())->get();
+            return Commerce::ofUser($request->user()->id)->get();
         }
 
         return Commerce::all();
