@@ -37,22 +37,6 @@ class CommerceController extends Controller
 
         if (!$commerce) return response()->json('No commerce found');
 
-        //! metodo viejo
-        /* $commerce->rubros = Commerce::find($commerce->id)->rubros()->orderBy('rubros.sort')->get();
-
-        foreach ($commerce->rubros as $rubro) {
-            $rubro->subrubros = Commerce::find($commerce->id)->subrubros()->where('subrubros.rubro_id', '=', $rubro->id)->orderBy('subrubros.sort')->get();
-
-            foreach ($rubro->subrubros as $subrubro) {
-                $subrubro->products = Product::with(['product_hashtags', 'product_prices'])->where([
-                    ['subrubro_id', '=', $subrubro->id],
-                    ['commerce_id', '=', $commerce->id],
-                ])->get();
-            }
-        }
-
-        return $commerce; */
-
         return Commerce::with(['rubros' => function (BelongsToMany $query) use ($commerce) {
                 return $query->with(['subrubros' => function ($query) use ($commerce) {
                         return $query->with(['products' => function ($query) use ($commerce) {
