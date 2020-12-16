@@ -45,7 +45,7 @@ Route::get('/commerces', [CommerceController::class, 'index']);
 
 Route::group(['prefix' => '/{commerceName}'], function () {
 
-    Route::get('/', [CommerceController::class, 'all']);
+    Route::get('/', [CommerceController::class, 'showByName']);
 
-    Route::get('/all', [CommerceController::class, 'all'])->name('all');
+    Route::get('/all', [CommerceController::class, 'showByName'])->name('showByName');
 });
