@@ -11,7 +11,7 @@ class CommerceController extends Controller
     /**
      * Get all the commerces or get the commerces for a given authenticated user.
      *
-     * @param  Request  $request
+     * @param  Illuminate\Http\Request  $request
      * @return object response
      */
     public function index(Request $request)
@@ -26,7 +26,7 @@ class CommerceController extends Controller
     /**
      * Show the commerce for a given commerce name.
      *
-     * @param  Request  $request
+     * @param  Illuminate\Http\Request  $request
      * @param  string  $commerceName
      * @return object response
      */
@@ -36,12 +36,10 @@ class CommerceController extends Controller
 
         if (!$commerce) return response()->json('No commerce found');
 
-        $res = Commerce::with(['rubros.subrubros.products' => function (HasMany $query) use ($commerce) {
+        return Commerce::with(['rubros.subrubros.products' => function (HasMany $query) use ($commerce) {
                 return $query->where('commerce_id', $commerce->id);
             }])
             ->find($commerce->id);
-
-        return $res;
     }
 
 }
