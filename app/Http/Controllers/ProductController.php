@@ -7,9 +7,6 @@ use App\Models\Product;
 use App\Models\Rubro;
 use App\Models\Subrubro;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
-use Illuminate\Http\File;
 
 class ProductController extends Controller
 {

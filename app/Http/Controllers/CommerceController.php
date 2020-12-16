@@ -3,12 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Commerce;
-use App\Models\Product;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class CommerceController extends Controller
 {
+    /**
+     * Get all the commerces or get the commerces for a given authenticated user.
+     *
+     * @param  Request  $request
+     * @return object response
+     */
     public function index(Request $request)
     {
         if ($request->user()) {
@@ -18,13 +23,23 @@ class CommerceController extends Controller
         return Commerce::all();
     }
 
-    public function all(Request $request, $commerceName)
+    /**
+     * Show the commerce for a given commerce name.
+     *
+     * @param  Request  $request
+     * @param  string  $commerceName
+     * @return object response
+     */
+    public function showByName(Request $request, $commerceName)
     {
         $commerce = Commerce::whereName($commerceName)->first();
 
         if (!$commerce) return response()->json('No commerce found');
 
-        $res = Commerce::with(['rubros.subrubros.products'])->whereName($commerceName)->first();
+        $res = Commerce::with(['rubros.subrubros.products' => function (HasMany $query) use ($commerce) {
+                return $query->where('commerce_id', $commerce->id);
+            }])
+            ->find($commerce->id);
 
         return $res;
     }
