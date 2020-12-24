@@ -45,8 +45,10 @@ class CommerceController extends Controller
                             ->has('products')
                             ->whereHas('commerces', function ($query) use ($commerce) {
                                 return $query->where('commerce_id', $commerce->id);   // me trae los subrubros solo de ese comercio
-                            });
+                            })
+                            ->orderBy('sort');
                     }])
+                    ->orderBy('sort')
                     ->where('commerce_id', $commerce->id);
             }])
             ->find($commerce->id);
