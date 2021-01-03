@@ -14,7 +14,7 @@ class AddAvatarDirnameToCommercesTable extends Migration
     public function up()
     {
         Schema::table('commerces', function (Blueprint $table) {
-            $table->string('avatar_dirname')->nullable();
+            $table->string('avatar_dirname')->nullable()->after('cover_dirname');
         });
     }
 
