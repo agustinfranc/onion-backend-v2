@@ -6,6 +6,7 @@ use App\Models\Commerce;
 use App\Models\Product;
 use App\Models\Rubro;
 use App\Models\Subrubro;
+use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -19,7 +20,7 @@ class ProductController extends Controller
      */
     public function index(Request $request, Commerce $commerce)
     {
-        return Product::with(['subrubro.rubro','product_hashtags', 'product_prices'])->whereCommerceId($commerce->id)->get();
+        return Product::with(['subrubro.rubro', 'product_hashtags', 'product_prices'])->whereCommerceId($commerce->id)->get();
     }
 
     /**
@@ -31,7 +32,7 @@ class ProductController extends Controller
      */
     public function show(Request $request, Product $product)
     {
-        return Product::with(['subrubro.rubro','product_hashtags', 'product_prices'])->find($product->id);
+        return Product::with(['subrubro.rubro', 'product_hashtags', 'product_prices'])->find($product->id);
     }
 
     /**
@@ -44,7 +45,9 @@ class ProductController extends Controller
     public function store(Request $request, Commerce $commerce)
     {
         $validatedData = $request->validate([
-            'code' => 'required|unique:products',
+            'code' => ['required', Rule::unique('products')->where(function ($query) use ($commerce) {
+                return $query->where('commerce_id', $commerce->id);
+            })],
             'name' => 'required|max:255',
             'rubro_id' => 'required|exists:rubros,id',
             'subrubro_id' => 'sometimes|required|exists:subrubros,id',
@@ -65,8 +68,7 @@ class ProductController extends Controller
             $subrubro->rubro()->associate($rubro);
 
             $subrubro->save();
-        }
-        else {
+        } else {
             $subrubro = Subrubro::find($validatedData['subrubro_id']);
         }
 
@@ -96,7 +98,9 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         $validatedData = $request->validate([
-            'code' => 'required',
+            'code' => ['required', Rule::unique('products')->where(function ($query) use ($product) {
+                return $query->where('commerce_id', $product->commerce_id);
+            })],
             'name' => 'required|max:255',
             'subrubro.id' => 'required|exists:subrubros,id',
             'price' => '',
