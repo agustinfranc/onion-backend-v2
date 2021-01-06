@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Commerce;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
@@ -38,19 +39,21 @@ class CommerceController extends Controller
         if (!$commerce) return response()->json('No commerce found');
 
         return Commerce::with(['rubros' => function (BelongsToMany $query) use ($commerce) {
-                return $query->with(['subrubros' => function ($query) use ($commerce) {
-                        return $query->with(['products' => function ($query) use ($commerce) {
-                                return $query->where('commerce_id', $commerce->id);   // me trae los productos solo de ese comercio
-                            }])
-                            ->has('products')
-                            ->whereHas('commerces', function ($query) use ($commerce) {
-                                return $query->where('commerce_id', $commerce->id);   // me trae los subrubros solo de ese comercio
-                            })
-                            ->orderBy('sort');
-                    }])
-                    ->orderBy('sort')
-                    ->where('commerce_id', $commerce->id);
+            return $query->with(['subrubros' => function (HasMany $query) use ($commerce) {
+                return $query->with(['products' => function (HasMany $query) use ($commerce) {
+                    return $query->where('commerce_id', $commerce->id);   // me trae los productos solo de ese comercio
+                }, 'commerces' => function (BelongsToMany $query) use ($commerce) {
+                    return $query->where('id', $commerce->id);   // me trae la tabla pivot de commerces_subrubros
+                }])
+                    ->has('products')
+                    ->whereHas('commerces', function (Builder $query) use ($commerce) {
+                        return $query->where('commerce_id', $commerce->id);   // me trae los subrubros solo de ese comercio
+                    })
+                    ->orderBy('sort');
             }])
+                ->orderBy('sort')
+                ->where('commerce_id', $commerce->id);
+        }])
             ->find($commerce->id);
     }
 }

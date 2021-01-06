@@ -25,7 +25,7 @@ class Subrubro extends Model
 
     public function commerces()
     {
-        return $this->belongsToMany('App\Models\Commerce');
+        return $this->belongsToMany(Commerce::class)->withPivot('slideable');
     }
 
     /**
