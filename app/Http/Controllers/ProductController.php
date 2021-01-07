@@ -100,7 +100,7 @@ class ProductController extends Controller
         $validatedData = $request->validate([
             'code' => ['required', Rule::unique('products')->where(function ($query) use ($product) {
                 return $query->where('commerce_id', $product->commerce_id);
-            })],
+            })->ignore($product)],
             'name' => 'required|max:255',
             'subrubro.id' => 'required|exists:subrubros,id',
             'price' => '',
