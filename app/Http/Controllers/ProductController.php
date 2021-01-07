@@ -100,7 +100,7 @@ class ProductController extends Controller
         $validatedData = $request->validate([
             'code' => ['required', Rule::unique('products')->where(function ($query) use ($product) {
                 return $query->where('commerce_id', $product->commerce_id);
-            })],
+            })->ignore($product)],
             'name' => 'required|max:255',
             'subrubro.id' => 'required|exists:subrubros,id',
             'price' => '',
@@ -126,16 +126,12 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  Product $product
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Product $product)
     {
-        $product = Product::findOrFail($id);
-
-        $product->delete();
-
-        return response(true);
+        return response($product->delete());
     }
 
     /**
@@ -154,8 +150,6 @@ class ProductController extends Controller
         }
 
         $path = $request->file('image')->store('images', 'public');
-
-        logger($path);
 
         $product->avatar_dirname = env('APP_URL') . '/storage/' . $path;
         $product->avatar = '';
