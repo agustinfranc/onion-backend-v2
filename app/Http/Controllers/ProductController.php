@@ -85,7 +85,7 @@ class ProductController extends Controller
 
         $product->save();
 
-        return response()->json($product);
+        return Product::with(['subrubro.rubro', 'product_hashtags', 'product_prices'])->find($product->id);
     }
 
     /**
@@ -120,7 +120,7 @@ class ProductController extends Controller
 
         $product->save();
 
-        return response($product);
+        return Product::with(['subrubro.rubro', 'product_hashtags', 'product_prices'])->find($product->id);
     }
 
     /**
