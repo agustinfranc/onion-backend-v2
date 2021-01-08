@@ -56,4 +56,59 @@ class CommerceController extends Controller
         }])
             ->find($commerce->id);
     }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Product  $product
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, Commerce $commerce)
+    {
+        $validatedData = $request->validate([
+            'fullname' => 'required|max:255',
+        ]);
+
+        $commerce->fill($validatedData);
+
+        $commerce->save();
+
+        return $commerce;
+    }
+
+    /**
+     * Upload commerce avatar/cover to storage
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Commerce  $commerce
+     * @return \Illuminate\Http\Response
+     */
+    public function upload(Request $request, Commerce $commerce)
+    {
+        // todo: create request to validate it (size, extension...)
+
+        if (
+            (!$request->hasFile('avatar') || !$request->file('avatar')->isValid()) &&
+            (!$request->hasFile('cover')  || !$request->file('cover')->isValid())
+        ) {
+            return response()->json(['error' => 'No se encuentra imagen en la request'], 500);
+        }
+
+        if ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
+            $path = $request->file('avatar')->store('images', 'public');
+
+            $commerce->avatar_dirname = env('APP_URL') . '/storage/' . $path;
+        }
+
+        if ($request->hasFile('cover') && $request->file('cover')->isValid()) {
+            $path = $request->file('cover')->store('images', 'public');
+
+            $commerce->cover_dirname = env('APP_URL') . '/storage/' . $path;
+        }
+
+        $commerce->save();
+
+        return response($commerce);
+    }
 }

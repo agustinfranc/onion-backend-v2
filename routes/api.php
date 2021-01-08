@@ -25,15 +25,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('/auth')->group(function () {
         Route::get('/me', [LoginController::class, 'me'])->name('me');
 
-        Route::apiResource('commerces', CommerceController::class)->only([
-            'index'
-        ]);
+        Route::apiResource('commerces', CommerceController::class);
 
         Route::apiResource('commerces.products', ProductController::class)->shallow();
 
-        Route::post('/products/{product}/upload', [ProductController::class, 'upload'])->name('products.upload');
-
         Route::apiResource('rubros', RubroController::class);
+
+        Route::post('/commerces/{commerce}/upload', [CommerceController::class, 'upload'])->name('commerces.upload');
+
+        Route::post('/products/{product}/upload', [ProductController::class, 'upload'])->name('products.upload');
 
         Route::get('/combos', GetCombos::class)->name('combos');
     });

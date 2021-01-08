@@ -11,6 +11,8 @@ class Commerce extends Model
 {
     use SoftDeletes;
 
+    protected $fillable = ['fullname'];
+
     /**
      * Relationships
      */
