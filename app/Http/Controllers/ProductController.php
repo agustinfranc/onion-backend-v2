@@ -109,6 +109,10 @@ class ProductController extends Controller
         ]);
 
         $subrubro = Subrubro::find($validatedData['subrubro']['id']);
+
+        $product->subrubro()->dissociate();
+        $product->subrubro()->associate($subrubro);
+
         $rubroId = $subrubro->rubro->id;
 
         $commerce = Commerce::find($product->commerce_id);
@@ -131,6 +135,10 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
+        $product->code = null;
+
+        $product->save();
+
         return response($product->delete());
     }
 
