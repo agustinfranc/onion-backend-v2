@@ -38,7 +38,7 @@ class CommerceController extends Controller
 
         if (!$commerce) return response()->json('No commerce found');
 
-        return Commerce::with(['rubros' => function (BelongsToMany $query) use ($commerce) {
+        return Commerce::with(['currency', 'rubros' => function (BelongsToMany $query) use ($commerce) {
             return $query->with(['subrubros' => function (HasMany $query) use ($commerce) {
                 return $query->with(['products' => function (HasMany $query) use ($commerce) {
                     return $query->with(['product_hashtags', 'product_prices'])->where('commerce_id', $commerce->id);   // me trae los productos solo de ese comercio
