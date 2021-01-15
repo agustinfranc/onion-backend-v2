@@ -37,6 +37,11 @@ class Commerce extends Model
         return $this->hasMany('App\Models\Product');
     }
 
+    public function currency()
+    {
+        return $this->belongsTo('App\Models\Currency');
+    }
+
     /**
      * Scopes
      */
