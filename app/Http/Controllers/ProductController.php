@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Commerce;
 use App\Models\Product;
+use App\Models\ProductPrice;
 use App\Models\Rubro;
 use App\Models\Subrubro;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -44,10 +46,12 @@ class ProductController extends Controller
      */
     public function store(Request $request, Commerce $commerce)
     {
+        $codeRules = $request->code ? [Rule::unique('products')->where(function ($query) use ($commerce) {
+            return $query->where('commerce_id', $commerce->id);
+        })] : '';
+
         $validatedData = $request->validate([
-            'code' => ['required', Rule::unique('products')->where(function ($query) use ($commerce) {
-                return $query->where('commerce_id', $commerce->id);
-            })],
+            'code' => $codeRules,
             'name' => 'required|max:255',
             'rubro_id' => 'required|exists:rubros,id',
             'subrubro_id' => 'sometimes|required|exists:subrubros,id',
@@ -58,12 +62,12 @@ class ProductController extends Controller
 
         $product = new Product();
 
-        $rubro = Rubro::find($validatedData['rubro_id']);
-
         if (!array_key_exists('subrubro_id', $validatedData)) {
 
             $subrubro = new Subrubro();
             $subrubro->name = $validatedData['subrubro'];
+
+            $rubro = Rubro::find($validatedData['rubro_id']);
 
             $subrubro->rubro()->associate($rubro);
 
@@ -97,32 +101,66 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
+        $codeRules = $request->code ? [Rule::unique('products')->where(function ($query) use ($product) {
+            return $query->where('commerce_id', $product->commerce_id);
+        })->ignore($product)] : '';
+
         $validatedData = $request->validate([
-            'code' => ['required', Rule::unique('products')->where(function ($query) use ($product) {
-                return $query->where('commerce_id', $product->commerce_id);
-            })->ignore($product)],
-            'name' => 'required|max:255',
-            'subrubro.id' => 'required|exists:subrubros,id',
-            'price' => '',
+            'code' => $codeRules,
             'description' => 'max:255',
             'disabled' => 'boolean',
+            'name' => 'required|max:255',
+            'price' => '',
+            // 'product_prices' => 'array',
+            'rubro.id' => 'required|exists:rubros,id',
+            'subrubro.id' => 'sometimes|required|exists:subrubros,id',
+            'subrubro' => '',
         ]);
 
-        $subrubro = Subrubro::find($validatedData['subrubro']['id']);
+        DB::beginTransaction();
 
-        $product->subrubro()->dissociate();
-        $product->subrubro()->associate($subrubro);
+		if (isset($validatedData['subrubro']['id'])) {
 
-        $rubroId = $subrubro->rubro->id;
+            $product->subrubro()->associate($validatedData['subrubro']['id']);
+        } else {
+            $product->subrubro()->dissociate();
+
+            $subrubro = new Subrubro();
+            $subrubro->name = $validatedData['subrubro'];
+
+            $rubro = Rubro::find($validatedData['rubro']['id']);
+
+            $subrubro->rubro()->associate($rubro);
+
+            $subrubro->save();
+
+            $product->subrubro()->associate($subrubro);
+
+            $product->save();
+
+            $product->refresh();
+        }
+
+        $rubroId = $product->subrubro->rubro->id;
 
         $commerce = Commerce::find($product->commerce_id);
 
         $commerce->rubros()->syncWithoutDetaching($rubroId);
-        $commerce->subrubros()->syncWithoutDetaching($validatedData['subrubro']['id']);
+        $commerce->subrubros()->syncWithoutDetaching($product->subrubro->id);
 
         $product->fill($validatedData);
 
+        // delete product_prices
+        // $product->product_prices()->foreach
+
         $product->save();
+
+        // $product->product_prices()->saveMany([
+        //     new ProductPrice(['message' => 'A new comment.']),
+        //     new ProductPrice(['message' => 'Another new comment.']),
+        // ]);
+
+        DB::commit();
 
         return Product::with(['subrubro.rubro', 'product_hashtags', 'product_prices'])->find($product->id);
     }
