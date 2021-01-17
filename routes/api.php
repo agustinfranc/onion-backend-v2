@@ -25,6 +25,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('/auth')->group(function () {
         Route::get('/me', [LoginController::class, 'me'])->name('me');
 
+        Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
         Route::apiResource('commerces', CommerceController::class);
 
         Route::apiResource('commerces.products', ProductController::class)->shallow();

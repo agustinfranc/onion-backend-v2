@@ -216,7 +216,7 @@ class ProductController extends Controller
         // todo: create request to validate it (size, extension...)
 
         if (!$request->hasFile('image') || !$request->file('image')->isValid()) {
-            return;
+            return response()->json(['error' => 'No se encontó una imagen o la imagen no es válida'], 500);
         }
 
         $path = $request->file('image')->store('images', 'public');
