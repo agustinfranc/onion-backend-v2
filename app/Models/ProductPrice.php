@@ -9,6 +9,8 @@ class ProductPrice extends Model
 {
     use SoftDeletes;
 
+    protected $fillable = ['name', 'price'];
+
     /**
      * Relationships
      */

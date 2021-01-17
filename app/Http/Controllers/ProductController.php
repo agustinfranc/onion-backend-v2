@@ -111,7 +111,7 @@ class ProductController extends Controller
             'disabled' => 'boolean',
             'name' => 'required|max:255',
             'price' => '',
-            // 'product_prices' => 'array',
+            'product_prices' => 'array',
             'rubro.id' => 'required|exists:rubros,id',
             'subrubro.id' => 'sometimes|required|exists:subrubros,id',
             'subrubro' => '',
@@ -119,7 +119,7 @@ class ProductController extends Controller
 
         DB::beginTransaction();
 
-		if (isset($validatedData['subrubro']['id'])) {
+        if (isset($validatedData['subrubro']['id'])) {
 
             $product->subrubro()->associate($validatedData['subrubro']['id']);
         } else {
@@ -136,7 +136,7 @@ class ProductController extends Controller
 
             $product->subrubro()->associate($subrubro);
 
-            $product->save();
+            $product->saveOrFail();
 
             $product->refresh();
         }
@@ -150,15 +150,39 @@ class ProductController extends Controller
 
         $product->fill($validatedData);
 
-        // delete product_prices
-        // $product->product_prices()->foreach
+        $product->saveOrFail();
 
-        $product->save();
+        if (isset($validatedData['product_prices'])) {
 
-        // $product->product_prices()->saveMany([
-        //     new ProductPrice(['message' => 'A new comment.']),
-        //     new ProductPrice(['message' => 'Another new comment.']),
-        // ]);
+            // recorro product_prices de request
+            // si tiene id lo busco y lo actualizo
+            // si tiene id y la propiedad deleted_at existe lo busco y lo elimino
+            // si no tiene id y no tiene deleted_at creo uno
+
+            collect($validatedData['product_prices'])->each(function ($validatedProductPrice) use ($product) {
+                if (isset($validatedProductPrice['id'])) {
+
+                    if (isset($validatedProductPrice['deleted_at'])) {
+                        $productPrice = ProductPrice::find($validatedProductPrice['id']);
+
+                        if ($productPrice) $productPrice->delete();
+                    } else {
+                        $productPrice = ProductPrice::find($validatedProductPrice['id']);
+
+                        $productPrice->fill($validatedProductPrice);
+
+                        $productPrice->saveOrFail();
+                    }
+                } else {
+                    $productPrice = new ProductPrice();
+
+                    $productPrice->fill($validatedProductPrice);
+
+                    $product->product_prices()->save($productPrice);
+                }
+            });
+        }
+
 
         DB::commit();
 
