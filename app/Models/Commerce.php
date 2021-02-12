@@ -19,7 +19,7 @@ class Commerce extends Model
 
     public function rubros()
     {
-        return $this->belongsToMany('App\Models\Rubro');
+        return $this->belongsToMany('App\Models\Rubro')->withPivot('sort');
     }
 
     public function subrubros()
