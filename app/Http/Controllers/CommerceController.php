@@ -38,6 +38,10 @@ class CommerceController extends Controller
 
         if (!$commerce) return response()->json('No commerce found');
 
+        if ($request->input('simplified', false)) {
+            return $commerce;
+        }
+
         return Commerce::with(['currency', 'rubros' => function (BelongsToMany $query) use ($commerce) {
             return $query->with(['subrubros' => function (HasMany $query) use ($commerce) {
                 return $query->with(['products' => function (HasMany $query) use ($commerce) {
