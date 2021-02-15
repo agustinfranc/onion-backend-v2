@@ -45,14 +45,25 @@ class CommerceController extends Controller
                 }, 'commerces' => function (BelongsToMany $query) use ($commerce) {
                     return $query->where('id', $commerce->id);   // me trae la tabla pivot de commerces_subrubros
                 }])
-                    ->has('products')
                     ->whereHas('commerces', function (Builder $query) use ($commerce) {
                         return $query->where('commerce_id', $commerce->id);   // me trae los subrubros solo de ese comercio
                     })
+                    ->whereHas('products', function (Builder $query) use ($commerce) {
+                        return $query->where('commerce_id', $commerce->id);
+                    })
                     ->orderBy('sort');
             }])
+                ->whereHas('commerce_subrubros', function (Builder $query) use ($commerce) {
+                    return $query->where('commerce_id', $commerce->id)
+                        ->whereHas('subrubro', function (Builder $query) use ($commerce) {
+                            return $query->whereHas('products', function (Builder $query) use ($commerce) {
+                                return $query->where('commerce_id', $commerce->id);
+                            });
+                        });
+                })
+                ->where('commerce_id', $commerce->id)
                 ->orderBy('sort')
-                ->where('commerce_id', $commerce->id);
+                ;
         }])
             ->find($commerce->id);
     }

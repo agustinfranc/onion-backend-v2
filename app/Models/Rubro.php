@@ -20,6 +20,11 @@ class Rubro extends Model
         return $this->hasMany('App\Models\Subrubro');
     }
 
+    public function commerce_subrubros()
+    {
+        return $this->hasMany(CommerceSubrubro::class);
+    }
+
     public function commerces()
     {
         return $this->belongsToMany('App\Models\Commerce');
