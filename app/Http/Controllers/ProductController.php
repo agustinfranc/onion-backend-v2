@@ -64,14 +64,19 @@ class ProductController extends Controller
 
         if (!array_key_exists('subrubro_id', $validatedData)) {
 
-            $subrubro = new Subrubro();
-            $subrubro->name = $validatedData['subrubro'];
+            // Busco subrubro por si ya existe
+            $subrubro = Subrubro::where('name', $validatedData['subrubro'])->first();
 
-            $rubro = Rubro::find($validatedData['rubro_id']);
+            if (!$subrubro) {
+                $subrubro = new Subrubro();
+                $subrubro->name = $validatedData['subrubro'];
 
-            $subrubro->rubro()->associate($rubro);
+                $rubro = Rubro::find($validatedData['rubro_id']);
 
-            $subrubro->save();
+                $subrubro->rubro()->associate($rubro);
+
+                $subrubro->save();
+            }
         } else {
             $subrubro = Subrubro::find($validatedData['subrubro_id']);
         }
@@ -125,14 +130,19 @@ class ProductController extends Controller
         } else {
             $product->subrubro()->dissociate();
 
-            $subrubro = new Subrubro();
-            $subrubro->name = $validatedData['subrubro'];
+            // Busco subrubro por si ya existe
+            $subrubro = Subrubro::where('name', $validatedData['subrubro'])->first();
 
-            $rubro = Rubro::find($validatedData['rubro']['id']);
+            if (!$subrubro) {
+                $subrubro = new Subrubro();
+                $subrubro->name = $validatedData['subrubro'];
 
-            $subrubro->rubro()->associate($rubro);
+                $rubro = Rubro::find($validatedData['rubro']['id']);
 
-            $subrubro->save();
+                $subrubro->rubro()->associate($rubro);
+
+                $subrubro->save();
+            }
 
             $product->subrubro()->associate($subrubro);
 
