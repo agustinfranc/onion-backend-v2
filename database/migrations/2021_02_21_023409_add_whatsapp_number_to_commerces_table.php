@@ -15,6 +15,8 @@ class AddWhatsappNumberToCommercesTable extends Migration
     {
         Schema::table('commerces', function (Blueprint $table) {
             $table->string('whatsapp_number', 20)->nullable()->after('avatar_dirname');
+            $table->string('instagram_account', 30)->nullable()->after('whatsapp_number');
+            $table->boolean('has_action_buttons')->default(false)->after('instagram_account');
         });
     }
 
@@ -27,6 +29,8 @@ class AddWhatsappNumberToCommercesTable extends Migration
     {
         Schema::table('commerces', function (Blueprint $table) {
             $table->dropColumn('whatsapp_number');
+            $table->dropColumn('instagram_account');
+            $table->dropColumn('has_action_buttons');
         });
     }
 }
