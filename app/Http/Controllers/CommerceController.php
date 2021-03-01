@@ -72,6 +72,34 @@ class CommerceController extends Controller
     }
 
     /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:100',
+            'fullname' => 'required|string|max:255',
+            'whatsapp_number' => 'string|max:20',
+            'instagram_account' => 'string|max:30',
+            'currency' => 'exists:currency,id',
+            'user' => 'required|exists:user,id',
+        ]);
+
+        $commerce = new Commerce();
+
+        $commerce->user()->syncWithoutDetaching($validatedData['user.id']);
+        $commerce->currency()->associate($validatedData['currency']);
+        $commerce->fill($validatedData);
+
+        $commerce->saveOrFail();
+
+        return Commerce::with(['user', 'currency'])->find($commerce->id);
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
