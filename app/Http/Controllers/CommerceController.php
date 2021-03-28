@@ -84,19 +84,22 @@ class CommerceController extends Controller
             'fullname' => 'required|string|max:255',
             'whatsapp_number' => 'string|max:20',
             'instagram_account' => 'string|max:30',
-            'currency' => 'exists:currency,id',
-            'user' => 'required|exists:user,id',
+            // 'currency' => 'required|exists:currencies,id',
         ]);
+
+        $user = $request->user();
 
         $commerce = new Commerce();
 
-        $commerce->user()->syncWithoutDetaching($validatedData['user.id']);
-        $commerce->currency()->associate($validatedData['currency']);
+        // $commerce->currency()->associate($validatedData['currency']);
+        $commerce->currency()->associate($request['currency']['id']);
         $commerce->fill($validatedData);
 
         $commerce->saveOrFail();
 
-        return Commerce::with(['user', 'currency'])->find($commerce->id);
+        $commerce->users()->syncWithoutDetaching($user->id);
+
+        return $commerce;
     }
 
     /**
