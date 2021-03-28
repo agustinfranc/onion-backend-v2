@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\RubroController;
 
 /*
@@ -19,7 +20,11 @@ use App\Http\Controllers\RubroController;
 |
 */
 
-Route::post('/token', [LoginController::class, 'authenticate'])->name('login');
+Route::middleware('guest')->group(function () {
+    Route::post('/token', [LoginController::class, 'authenticate'])->name('login');
+
+    Route::post('/register', [RegisterController::class, 'register'])->name('register');
+});
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('/auth')->group(function () {

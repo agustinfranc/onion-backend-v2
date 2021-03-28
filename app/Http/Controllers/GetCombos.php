@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Rubro;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
 class GetCombos extends Controller
@@ -17,9 +17,18 @@ class GetCombos extends Controller
     {
         $user = $request->user();
 
-        $combos = [
-        ];
+        $combos = explode(',', request()->query('combos'));
 
-        return response()->json($combos);
+        $response = [];
+
+        foreach($combos as $combo) {
+            $model = 'App\\Models\\' . Str::studly(Str::singular($combo));
+
+            if(!class_exists($model)) continue;
+
+            $response[$combo] = $model::all();
+        }
+
+        return response()->json($response);
     }
 }

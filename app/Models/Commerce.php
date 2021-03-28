@@ -11,7 +11,7 @@ class Commerce extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['fullname'];
+    protected $fillable = ['name', 'fullname', 'cover_dirname', 'avatar_dirname', 'whatsapp_number', 'instagram_account', 'has_action_buttons', 'has_footer'];
 
     /**
      * Relationships
