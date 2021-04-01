@@ -16,7 +16,8 @@ class AddYoutubeAccountToCommercesTable extends Migration
         Schema::table('commerces', function (Blueprint $table) {
             $table->string('youtube_account', 30)->nullable()->after('instagram_account');
             $table->string('tiktok_account', 30)->nullable()->after('youtube_account');
-            $table->string('address', 50)->nullable()->after('fullname');
+            $table->string('maps_account', 30)->nullable()->after('tiktok_account');
+            $table->string('facebook_account', 30)->nullable()->after('instagram_account');
         });
     }
 
@@ -30,7 +31,8 @@ class AddYoutubeAccountToCommercesTable extends Migration
         Schema::table('commerces', function (Blueprint $table) {
             $table->dropColumn('youtube_account');
             $table->dropColumn('tiktok_account');
-            $table->dropColumn('address');
+            $table->dropColumn('maps_account');
+            $table->dropColumn('facebook_account');
         });
     }
 }
