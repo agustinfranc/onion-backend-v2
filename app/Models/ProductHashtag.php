@@ -9,6 +9,8 @@ class ProductHashtag extends Model
 {
     use SoftDeletes;
 
+    protected $fillable = ['name', 'to'];
+
     /**
      * Relationships
      */
