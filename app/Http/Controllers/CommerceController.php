@@ -26,6 +26,18 @@ class CommerceController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Commerce  $commerce
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Request $request, Commerce $commerce)
+    {
+        return $commerce;
+    }
+
+    /**
      * Show the commerce for a given commerce name.
      *
      * @param  Illuminate\Http\Request  $request

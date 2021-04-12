@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Commerce;
 use App\Models\Product;
+use App\Models\ProductHashtag;
 use App\Models\ProductPrice;
 use App\Models\Rubro;
 use App\Models\Subrubro;
@@ -56,6 +57,8 @@ class ProductController extends Controller
             'rubro_id' => 'required|exists:rubros,id',
             'subrubro_id' => 'sometimes|required|exists:subrubros,id',
             'price' => '',
+            'product_prices' => 'array',
+            'product_hashtags' => 'array',
             'subrubro' => '',
             'description' => 'max:255',
         ]);
@@ -92,7 +95,11 @@ class ProductController extends Controller
 
         $product->commerce()->associate($commerce);
 
-        $product->save();
+        $product->saveOrFail();
+
+        $product = $this->_saveProductPrices($validatedData, $product);
+
+        $product = $this->_saveProductHashtags($validatedData, $product);
 
         return Product::with(['subrubro.rubro', 'product_hashtags', 'product_prices'])->find($product->id);
     }
@@ -117,6 +124,7 @@ class ProductController extends Controller
             'name' => 'required|max:255',
             'price' => '',
             'product_prices' => 'array',
+            'product_hashtags' => 'array',
             'rubro.id' => 'required|exists:rubros,id',
             'subrubro.id' => 'sometimes|required|exists:subrubros,id',
             'subrubro' => '',
@@ -162,37 +170,9 @@ class ProductController extends Controller
 
         $product->saveOrFail();
 
-        if (isset($validatedData['product_prices'])) {
+        $product = $this->_saveProductPrices($validatedData, $product);
 
-            // recorro product_prices de request
-            // si tiene id lo busco y lo actualizo
-            // si tiene id y la propiedad deleted_at existe lo busco y lo elimino
-            // si no tiene id y no tiene deleted_at creo uno
-
-            collect($validatedData['product_prices'])->each(function ($validatedProductPrice) use ($product) {
-                if (isset($validatedProductPrice['id'])) {
-
-                    if (isset($validatedProductPrice['deleted_at'])) {
-                        $productPrice = ProductPrice::find($validatedProductPrice['id']);
-
-                        if ($productPrice) $productPrice->delete();
-                    } else {
-                        $productPrice = ProductPrice::find($validatedProductPrice['id']);
-
-                        $productPrice->fill($validatedProductPrice);
-
-                        $productPrice->saveOrFail();
-                    }
-                } else {
-                    $productPrice = new ProductPrice();
-
-                    $productPrice->fill($validatedProductPrice);
-
-                    $product->product_prices()->save($productPrice);
-                }
-            });
-        }
-
+        $product = $this->_saveProductHashtags($validatedData, $product);
 
         DB::commit();
 
@@ -238,4 +218,71 @@ class ProductController extends Controller
 
         return response($product);
     }
+
+    private function _saveProductPrices($validatedData, Product $product): Product
+    {
+        // recorro product_prices de request
+        // si tiene id lo busco y lo actualizo
+        // si tiene id y la propiedad deleted_at existe lo busco y lo elimino
+        // si no tiene id y no tiene deleted_at creo uno
+
+        collect($validatedData['product_prices'])->each(function ($validatedProductPrice) use ($product) {
+            if (isset($validatedProductPrice['id'])) {
+
+                if (isset($validatedProductPrice['deleted_at'])) {
+                    $productPrice = ProductPrice::find($validatedProductPrice['id']);
+
+                    if ($productPrice) $productPrice->delete();
+                } else {
+                    $productPrice = ProductPrice::find($validatedProductPrice['id']);
+
+                    $productPrice->fill($validatedProductPrice);
+
+                    $productPrice->saveOrFail();
+                }
+            } else {
+                $productPrice = new ProductPrice();
+
+                $productPrice->fill($validatedProductPrice);
+
+                $product->product_prices()->save($productPrice);
+            }
+        });
+
+        return $product;
+    }
+
+    private function _saveProductHashtags($validatedData, Product $product): Product
+    {
+        // recorro product_hashtags de request
+        // si tiene id lo busco y lo actualizo
+        // si tiene id y la propiedad deleted_at existe lo busco y lo elimino
+        // si no tiene id y no tiene deleted_at creo uno
+
+        collect($validatedData['product_hashtags'])->each(function ($validatedProductHashtag) use ($product) {
+            if (isset($validatedProductHashtag['id'])) {
+
+                if (isset($validatedProductHashtag['deleted_at'])) {
+                    $productHashtag = ProductHashtag::find($validatedProductHashtag['id']);
+
+                    if ($productHashtag) $productHashtag->delete();
+                } else {
+                    $productHashtag = ProductHashtag::find($validatedProductHashtag['id']);
+
+                    $productHashtag->fill($validatedProductHashtag);
+
+                    $productHashtag->saveOrFail();
+                }
+            } else {
+                $productHashtag = new ProductHashtag();
+
+                $productHashtag->fill($validatedProductHashtag);
+
+                $product->product_hashtags()->save($productHashtag);
+            }
+        });
+
+        return $product;
+    }
+
 }
