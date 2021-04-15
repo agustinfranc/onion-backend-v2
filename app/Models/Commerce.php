@@ -50,15 +50,17 @@ class Commerce extends Model
      * Scope a query to only include commerces by authenticated user
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  \App\Models\User  $user
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeOfUser($query, $userId = null)
+    public function scopeOfUser($query, $user = null)
     {
-        if (!$userId && request()->user()) $userId = request()->user()->id;
+        if (!$user && request()->user()) $user = request()->user();
 
-        return $query->whereHas('users', function (Builder $query) use ($userId) {
-            $query->whereId($userId);
+        return $query->when(!$user->admin, function ($query) use ($user) {
+            return $query->whereHas('users', function (Builder $query) use ($user) {
+                $query->whereId($user->id);
+            });
         });
     }
-
 }

@@ -32,7 +32,7 @@ class LoginController extends Controller
             return response()->json(['error' => 'Usuario y/o contraseña incorrectos'], 401);
         }
 
-        $user->commerces = Commerce::ofUser($user->id)->get();
+        $user->commerces = Commerce::ofUser($user)->get();
         $user->token = $user->createToken($validatedData['device_name'] ?? 'token-name')->plainTextToken;
 
         return response()->json($user);
@@ -45,7 +45,7 @@ class LoginController extends Controller
         }
 
         $rsp = $request->user();
-        $rsp->commerces = Commerce::ofUser()->get();
+        $rsp->commerces = Commerce::ofUser($request->user())->get();
 
         return response()->json($rsp);
     }
