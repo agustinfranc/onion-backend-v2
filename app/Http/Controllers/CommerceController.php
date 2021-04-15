@@ -94,8 +94,8 @@ class CommerceController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:100',
             'fullname' => 'required|string|max:255',
-            'whatsapp_number' => 'string|max:20',
-            'instagram_account' => 'string|max:30',
+            'whatsapp_number' => 'nullable|string|max:20',
+            'instagram_account' => 'nullable|string|max:30',
             // 'currency' => 'required|exists:currencies,id',
         ]);
 
