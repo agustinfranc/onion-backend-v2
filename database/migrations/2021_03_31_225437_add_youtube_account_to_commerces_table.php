@@ -16,7 +16,7 @@ class AddYoutubeAccountToCommercesTable extends Migration
         Schema::table('commerces', function (Blueprint $table) {
             $table->string('youtube_account', 30)->nullable()->after('instagram_account');
             $table->string('tiktok_account', 30)->nullable()->after('youtube_account');
-            $table->string('maps_account', 30)->nullable()->after('tiktok_account');
+            $table->text('maps_account')->nullable()->after('tiktok_account');
             $table->string('facebook_account', 30)->nullable()->after('instagram_account');
         });
     }
