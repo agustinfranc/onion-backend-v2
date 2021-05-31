@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class CommerceController extends Controller
 {
@@ -91,21 +92,16 @@ class CommerceController extends Controller
      */
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:100',
-            'fullname' => 'required|string|max:255',
-            'whatsapp_number' => 'nullable|string|max:20',
-            'instagram_account' => 'nullable|string|max:30',
-            // 'currency' => 'required|exists:currencies,id',
-        ]);
-
         $user = $request->user();
 
         $commerce = new Commerce();
 
-        // $commerce->currency()->associate($validatedData['currency']);
-        $commerce->currency()->associate($request['currency']['id']);
-        $commerce->fill($validatedData);
+        $input = $request->all();
+
+        $input['name'] = Str::slug($input['fullname']);
+
+        $commerce->currency()->associate($input['currency']['id']);
+        $commerce->fill($input);
 
         $commerce->saveOrFail();
 
@@ -155,13 +151,15 @@ class CommerceController extends Controller
         if ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
             $path = $request->file('avatar')->store('images', 'public');
 
-            $commerce->avatar_dirname = env('APP_URL') . '/storage/' . $path;
+            // $commerce->avatar_dirname = env('APP_URL', 'https://api.onion.ar') . '/storage/' . $path;
+            $commerce->avatar_dirname = 'https://api.onion.ar/storage/' . $path;
         }
 
         if ($request->hasFile('cover') && $request->file('cover')->isValid()) {
             $path = $request->file('cover')->store('images', 'public');
 
-            $commerce->cover_dirname = env('APP_URL') . '/storage/' . $path;
+            // $commerce->cover_dirname = env('APP_URL', 'https://api.onion.ar') . '/storage/' . $path;
+            $commerce->cover_dirname = 'https://api.onion.ar/storage/' . $path;
         }
 
         $commerce->save();

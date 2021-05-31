@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProductRequest;
 use App\Models\Commerce;
 use App\Models\Product;
 use App\Models\ProductHashtag;
@@ -41,27 +42,23 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Commerce  $commerce
+     * @param ProductRequest $request
+     * @param Commerce  $commerce
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Commerce $commerce)
+    public function store(ProductRequest $request, Commerce $commerce)
     {
-        $codeRules = $request->code ? [Rule::unique('products')->where(function ($query) use ($commerce) {
-            return $query->where('commerce_id', $commerce->id);
-        })] : '';
+        $codeRules = [Rule::unique('products')->where(function ($query) use ($commerce) {
+            return $query
+                ->where('commerce_id', $commerce->id)
+                ->whereNotNull('code');
+        })];
 
         $validatedData = $request->validate([
             'code' => $codeRules,
-            'name' => 'required|max:255',
-            'rubro_id' => 'required|exists:rubros,id',
-            'subrubro_id' => 'sometimes|required|exists:subrubros,id',
-            'price' => 'nullable',
-            'product_prices' => 'array',
-            'product_hashtags' => 'array',
-            'subrubro' => '',
-            'description' => 'max:255',
         ]);
+
+        $validatedData = array_merge($request->all(), $validatedData);
 
         $product = new Product();
 
@@ -107,28 +104,23 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Product  $product
+     * @param ProductRequest $request
+     * @param  Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Product $product)
+    public function update(ProductRequest $request, Product $product)
     {
-        $codeRules = $request->code ? [Rule::unique('products')->where(function ($query) use ($product) {
-            return $query->where('commerce_id', $product->commerce_id);
-        })->ignore($product)] : '';
+        $codeRules = [Rule::unique('products')->where(function ($query) use ($product) {
+            return $query
+                ->where('commerce_id', $product->commerce_id)
+                ->whereNotNull('code');
+        })->ignore($product)];
 
         $validatedData = $request->validate([
             'code' => $codeRules,
-            'description' => 'max:255',
-            'disabled' => 'boolean',
-            'name' => 'required|max:255',
-            'price' => 'nullable',
-            'product_prices' => 'array',
-            'product_hashtags' => 'array',
-            'rubro.id' => 'required|exists:rubros,id',
-            'subrubro.id' => 'sometimes|required|exists:subrubros,id',
-            'subrubro' => '',
         ]);
+
+        $validatedData = array_merge($request->all(), $validatedData);
 
         DB::beginTransaction();
 
@@ -211,7 +203,8 @@ class ProductController extends Controller
 
         $path = $request->file('image')->store('images', 'public');
 
-        $product->avatar_dirname = env('APP_URL') . '/storage/' . $path;
+        // $product->avatar_dirname = env('APP_URL', 'https://api.onion.ar') . '/storage/' . $path;
+        $product->avatar_dirname = 'https://api.onion.ar/storage/' . $path;
         $product->avatar = '';
 
         $product->save();
