@@ -203,7 +203,8 @@ class ProductController extends Controller
 
         $path = $request->file('image')->store('images', 'public');
 
-        $product->avatar_dirname = env('APP_URL', 'https://api.onion.ar') . '/storage/' . $path;
+        // $product->avatar_dirname = env('APP_URL', 'https://api.onion.ar') . '/storage/' . $path;
+        $product->avatar_dirname = 'https://api.onion.ar/storage/' . $path;
         $product->avatar = '';
 
         $product->save();

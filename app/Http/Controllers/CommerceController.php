@@ -151,13 +151,15 @@ class CommerceController extends Controller
         if ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
             $path = $request->file('avatar')->store('images', 'public');
 
-            $commerce->avatar_dirname = env('APP_URL', 'https://api.onion.ar') . '/storage/' . $path;
+            // $commerce->avatar_dirname = env('APP_URL', 'https://api.onion.ar') . '/storage/' . $path;
+            $commerce->avatar_dirname = 'https://api.onion.ar/storage/' . $path;
         }
 
         if ($request->hasFile('cover') && $request->file('cover')->isValid()) {
             $path = $request->file('cover')->store('images', 'public');
 
-            $commerce->cover_dirname = env('APP_URL', 'https://api.onion.ar') . '/storage/' . $path;
+            // $commerce->cover_dirname = env('APP_URL', 'https://api.onion.ar') . '/storage/' . $path;
+            $commerce->cover_dirname = 'https://api.onion.ar/storage/' . $path;
         }
 
         $commerce->save();
