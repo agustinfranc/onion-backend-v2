@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\e2e;
+namespace Tests\E2E;
 
 use App\Models\Commerce;
 use App\Models\User;
