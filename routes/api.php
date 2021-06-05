@@ -24,6 +24,15 @@ Route::middleware('guest')->group(function () {
     Route::post('/token', [LoginController::class, 'authenticate'])->name('login');
 
     Route::post('/register', [RegisterController::class, 'register'])->name('register');
+
+    Route::get('/commerces', [CommerceController::class, 'index']);
+
+    Route::group(['prefix' => '/{commerceName}'], function () {
+
+        Route::get('/', [CommerceController::class, 'showByName']);
+
+        Route::get('/all', [CommerceController::class, 'showByName'])->name('showByName');
+    });
 });
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -46,13 +55,4 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
 
-});
-
-Route::get('/commerces', [CommerceController::class, 'index']);
-
-Route::group(['prefix' => '/{commerceName}'], function () {
-
-    Route::get('/', [CommerceController::class, 'showByName']);
-
-    Route::get('/all', [CommerceController::class, 'showByName'])->name('showByName');
 });
