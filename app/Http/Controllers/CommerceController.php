@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CommerceRequest;
 use App\Models\Commerce;
 use App\Repositories\CommerceRepository;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class CommerceController extends Controller
 {
@@ -50,13 +50,11 @@ class CommerceController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, CommerceRepository $repository)
+    public function store(CommerceRequest $request, CommerceRepository $repository)
     {
         $user = $request->user();
 
-        $input = $request->all();
-
-        return $repository->save($input, $user);
+        return $repository->save($request->all(), $user);
     }
 
     /**
