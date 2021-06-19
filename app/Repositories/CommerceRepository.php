@@ -3,8 +3,8 @@
 namespace App\Repositories;
 
 use App\Models\Commerce;
-use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
@@ -49,6 +49,15 @@ class CommerceRepository
         }]);
     }
 
+    public function getAll(array $input, $user = null): Collection
+    {
+        if ($user) {
+            return Commerce::ofUser($user)->get();
+        }
+
+        return Commerce::all();
+    }
+
     public function save($input, $user): Commerce
     {
         $commerce = new Commerce();
@@ -61,6 +70,15 @@ class CommerceRepository
         $commerce->saveOrFail();
 
         $commerce->users()->syncWithoutDetaching($user->id);
+
+        return $commerce;
+    }
+
+    public function update(array $input, Commerce $commerce): Commerce
+    {
+        $commerce->fill($input);
+
+        $commerce->save();
 
         return $commerce;
     }

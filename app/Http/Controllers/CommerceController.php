@@ -15,13 +15,9 @@ class CommerceController extends Controller
      * @param  Illuminate\Http\Request  $request
      * @return object response
      */
-    public function index(Request $request)
+    public function index(Request $request, CommerceRepository $repository)
     {
-        if ($request->user()) {
-            return Commerce::ofUser($request->user())->get();
-        }
-
-        return Commerce::all();
+        return $repository->getAll($request->all(), $request->user());
     }
 
     /**
@@ -70,17 +66,13 @@ class CommerceController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Commerce $commerce)
+    public function update(Request $request, Commerce $commerce, CommerceRepository $repository)
     {
         $validatedData = $request->validate([
             'fullname' => 'required|max:255',
         ]);
 
-        $commerce->fill($validatedData);
-
-        $commerce->save();
-
-        return $commerce;
+        return $repository->update($validatedData, $commerce);
     }
 
     /**

@@ -26,6 +26,14 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [RegisterController::class, 'register'])->name('register');
 
     Route::get('/commerces', [CommerceController::class, 'index']);
+    Route::get('/commerces/{commerce}', [CommerceController::class, 'show']);
+
+    Route::group(['prefix' => '/commerces/{commerceName}'], function () {
+
+        Route::get('/', [CommerceController::class, 'showByName']);
+
+        Route::get('/all', [CommerceController::class, 'showByName'])->name('showByName');
+    });
 
     Route::group(['prefix' => '/{commerceName}'], function () {
 
@@ -53,6 +61,4 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::get('/combos', GetCombos::class)->name('combos');
     });
-
-
 });
