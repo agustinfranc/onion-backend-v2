@@ -80,7 +80,7 @@ class CommerceController extends Controller
      * @param  \App\Models\Commerce  $commerce
      * @return \Illuminate\Http\Response
      */
-    public function upload(Request $request, Commerce $commerce)
+    public function upload(Request $request, Commerce $commerce, CommerceRepository $repository): Commerce
     {
         // todo: create request to validate it (size, extension...)
 
@@ -91,22 +91,22 @@ class CommerceController extends Controller
             return response()->json(['error' => 'No se encuentra imagen en la request'], 500);
         }
 
+        $input = [];
+
         if ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
             $path = $request->file('avatar')->store('images', 'public');
 
             // $commerce->avatar_dirname = env('APP_URL', 'https://api.onion.ar') . '/storage/' . $path;
-            $commerce->avatar_dirname = 'https://api.onion.ar/storage/' . $path;
+            $input['avatar_dirname'] = 'https://api.onion.ar/storage/' . $path;
         }
 
         if ($request->hasFile('cover') && $request->file('cover')->isValid()) {
             $path = $request->file('cover')->store('images', 'public');
 
             // $commerce->cover_dirname = env('APP_URL', 'https://api.onion.ar') . '/storage/' . $path;
-            $commerce->cover_dirname = 'https://api.onion.ar/storage/' . $path;
+            $input['cover_dirname'] = 'https://api.onion.ar/storage/' . $path;
         }
 
-        $commerce->save();
-
-        return response($commerce);
+        return $repository->update($input, $commerce);
     }
 }
