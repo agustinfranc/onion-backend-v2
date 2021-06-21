@@ -33,7 +33,7 @@ class ProductRequest extends FormRequest
             'product_hashtags' => 'array',
             'rubro.id' => 'required_without:subrubro.id|exists:rubros,id',
             'subrubro.id' => 'sometimes|required|exists:subrubros,id',
-            'subrubro' => '',
+            'subrubro' => 'required_without:subrubro.id',
         ];
     }
 }
