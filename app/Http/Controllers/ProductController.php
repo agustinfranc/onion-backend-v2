@@ -9,6 +9,7 @@ use App\Models\ProductHashtag;
 use App\Models\ProductPrice;
 use App\Models\Rubro;
 use App\Models\Subrubro;
+use App\Repositories\ProductRepository;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -22,9 +23,9 @@ class ProductController extends Controller
      * @param  \App\Models\Commerce  $commerce
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request, Commerce $commerce)
+    public function index(Request $request, Commerce $commerce, ProductRepository $repository)
     {
-        return Product::with(['subrubro.rubro', 'product_hashtags', 'product_prices'])->whereCommerceId($commerce->id)->get();
+        return $repository->getAll($commerce);
     }
 
     /**
@@ -34,9 +35,9 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, Product $product)
+    public function show(Request $request, Product $product, ProductRepository $repository)
     {
-        return Product::with(['subrubro.rubro', 'product_hashtags', 'product_prices'])->find($product->id);
+        return $repository->getOne($product);
     }
 
     /**
@@ -71,7 +72,7 @@ class ProductController extends Controller
                 $subrubro = new Subrubro();
                 $subrubro->name = $validatedData['subrubro'];
 
-                $rubro = Rubro::find($validatedData['rubro_id']);
+                $rubro = Rubro::find($validatedData['rubro']['id']);
 
                 $subrubro->rubro()->associate($rubro);
 
@@ -85,7 +86,7 @@ class ProductController extends Controller
 
         $product->subrubro()->associate($subrubro);
 
-        $commerce->rubros()->syncWithoutDetaching($validatedData['rubro_id']);
+        $commerce->rubros()->syncWithoutDetaching($validatedData['rubro']['id']);
         $commerce->subrubros()->syncWithoutDetaching($subrubroId);
 
         $product->fill($validatedData);
@@ -219,6 +220,10 @@ class ProductController extends Controller
         // si tiene id y la propiedad deleted_at existe lo busco y lo elimino
         // si no tiene id y no tiene deleted_at creo uno
 
+        if (empty($validatedData['product_prices'])) {
+            return $product;
+        }
+
         collect($validatedData['product_prices'])->each(function ($validatedProductPrice) use ($product) {
             if (isset($validatedProductPrice['id'])) {
 
@@ -251,6 +256,10 @@ class ProductController extends Controller
         // si tiene id lo busco y lo actualizo
         // si tiene id y la propiedad deleted_at existe lo busco y lo elimino
         // si no tiene id y no tiene deleted_at creo uno
+
+        if (empty($validatedData['product_hashtags'])) {
+            return $product;
+        }
 
         collect($validatedData['product_hashtags'])->each(function ($validatedProductHashtag) use ($product) {
             if (isset($validatedProductHashtag['id'])) {
