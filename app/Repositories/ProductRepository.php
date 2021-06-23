@@ -8,15 +8,16 @@ use App\Models\ProductHashtag;
 use App\Models\ProductPrice;
 use App\Models\Rubro;
 use App\Models\Subrubro;
+use Illuminate\Database\Eloquent\Collection;
 
 class ProductRepository
 {
-    public function getAll(Commerce $commerce)
+    public function getAll(Commerce $commerce): Collection
     {
         return Product::with(['subrubro.rubro', 'product_hashtags', 'product_prices'])->whereCommerceId($commerce->id)->get();
     }
 
-    public function getOne(Product $product)
+    public function getOne(Product $product): Product
     {
         return $product->load(['subrubro.rubro', 'product_hashtags', 'product_prices']);
     }
