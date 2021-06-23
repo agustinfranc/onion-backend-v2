@@ -47,7 +47,7 @@ class ProductController extends Controller
      * @param Commerce  $commerce
      * @return \Illuminate\Http\Response
      */
-    public function store(ProductRequest $request, Commerce $commerce)
+    public function store(ProductRequest $request, Commerce $commerce, ProductRepository $repository)
     {
         $codeRules = [Rule::unique('products')->where(function ($query) use ($commerce) {
             return $query
@@ -61,45 +61,9 @@ class ProductController extends Controller
 
         $validatedData = array_merge($request->all(), $validatedData);
 
-        $product = new Product();
+        $product = $repository->save($validatedData, $commerce);
 
-        if (!array_key_exists('subrubro_id', $validatedData)) {
-
-            // Busco subrubro por si ya existe
-            $subrubro = Subrubro::where('name', $validatedData['subrubro'])->first();
-
-            if (!$subrubro) {
-                $subrubro = new Subrubro();
-                $subrubro->name = $validatedData['subrubro'];
-
-                $rubro = Rubro::find($validatedData['rubro']['id']);
-
-                $subrubro->rubro()->associate($rubro);
-
-                $subrubro->save();
-            }
-        } else {
-            $subrubro = Subrubro::find($validatedData['subrubro_id']);
-        }
-
-        $subrubroId = $subrubro->id;
-
-        $product->subrubro()->associate($subrubro);
-
-        $commerce->rubros()->syncWithoutDetaching($validatedData['rubro']['id']);
-        $commerce->subrubros()->syncWithoutDetaching($subrubroId);
-
-        $product->fill($validatedData);
-
-        $product->commerce()->associate($commerce);
-
-        $product->saveOrFail();
-
-        $product = $this->_saveProductPrices($validatedData, $product);
-
-        $product = $this->_saveProductHashtags($validatedData, $product);
-
-        return Product::with(['subrubro.rubro', 'product_hashtags', 'product_prices'])->find($product->id);
+        return $product->load(['subrubro.rubro', 'product_hashtags', 'product_prices']);
     }
 
     /**
