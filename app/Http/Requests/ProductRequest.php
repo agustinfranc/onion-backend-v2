@@ -29,11 +29,17 @@ class ProductRequest extends FormRequest
             'disabled' => 'boolean',
             'name' => 'required|max:255',
             'price' => 'nullable',
-            'product_prices' => 'array',
-            'product_hashtags' => 'array',
             'rubro.id' => 'required_without:subrubro.id|exists:rubros,id',
             'subrubro.id' => 'sometimes|required|exists:subrubros,id',
             'subrubro' => 'required_without:subrubro.id',
+
+            'product_prices' => 'nullable|array',
+            'product_prices.*.name' => 'nullable|max:255',
+            'product_prices.*.price' => 'nullable|numeric',
+
+            'product_hashtags' => 'nullable|array',
+            'product_hashtags.*.name' => 'nullable|max:255',
+            'product_hashtags.*.to' => 'nullable|max:255',
         ];
     }
 }
