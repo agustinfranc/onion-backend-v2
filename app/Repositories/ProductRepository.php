@@ -64,6 +64,62 @@ class ProductRepository
         return $product;
     }
 
+    public function update(array $input, Product $product): Product
+    {
+        if (isset($input['subrubro']['id'])) {
+
+            $product->subrubro()->associate($input['subrubro']['id']);
+        } else {
+            $product->subrubro()->dissociate();
+
+            // Busco subrubro por si ya existe
+            $subrubro = Subrubro::where('name', $input['subrubro'])->first();
+
+            if (!$subrubro) {
+                $subrubro = new Subrubro();
+                $subrubro->name = $input['subrubro'];
+
+                $rubro = Rubro::find($input['rubro']['id']);
+
+                $subrubro->rubro()->associate($rubro);
+
+                $subrubro->save();
+            }
+
+            $product->subrubro()->associate($subrubro);
+
+            $product->saveOrFail();
+
+            $product->refresh();
+        }
+
+        $rubroId = $product->subrubro->rubro->id;
+
+        $commerce = Commerce::find($product->commerce_id);
+
+        $commerce->rubros()->syncWithoutDetaching($rubroId);
+        $commerce->subrubros()->syncWithoutDetaching($product->subrubro->id);
+
+        $product->fill($input);
+
+        $product->saveOrFail();
+
+        $product = $this->_saveProductPrices($input, $product);
+
+        $product = $this->_saveProductHashtags($input, $product);
+
+        return $product;
+    }
+
+    public function delete($product): bool
+    {
+        $product->code = null;
+
+        $product->save();
+
+        return $product->delete();
+    }
+
     private function _saveProductPrices($input, Product $product): Product
     {
         // recorro product_prices de request
