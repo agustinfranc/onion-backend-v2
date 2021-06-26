@@ -10,6 +10,25 @@ Onion is a company in which we take care of digitizing your business to anticipa
 
 PHP 7.3 and later.
 
+## Build Setup
+
+```bash
+# install dependencies
+$ composer install
+
+# create .env and .env.testing from .env.example
+$ touch .env && touch .env.example
+
+# run migrations
+$ php artisan migrate --seed
+
+# serve with hot reload at localhost:8080
+$ php artisan serve
+
+# run tests
+$ php artisan test
+```
+
 ## License
 
 This is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
