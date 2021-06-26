@@ -27,9 +27,9 @@ class CommerceController extends Controller
      * @param  \App\Models\Commerce  $commerce
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, Commerce $commerce)
+    public function show(Request $request, Commerce $commerce, CommerceRepository $repository)
     {
-        return $commerce;
+        return $repository->getOne($commerce, $request->user());
     }
 
     /**

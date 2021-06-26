@@ -15,7 +15,7 @@ class CommerceRepository
     {
         $commerce = Commerce::whereName($commerceName)->first();
 
-        if (!$commerce) return response()->json('No commerce found');
+        if (!$commerce) abort(404, 'No commerce found');
 
         if (isset($input['simplified']) && $input['simplified']) {
             return $commerce;
@@ -56,6 +56,19 @@ class CommerceRepository
         }
 
         return Commerce::all();
+    }
+
+    public function getOne(Commerce $commerce, $user = null): Commerce
+    {
+        if (!$user) {
+            return $commerce;
+        }
+
+        if (!$commerce->users->contains($user->id)) {
+            abort(404, 'No commerce found for authenticated user');
+        }
+
+        return $commerce->load('currency');
     }
 
     public function save($input, $user): Commerce
