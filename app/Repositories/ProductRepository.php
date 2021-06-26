@@ -62,7 +62,7 @@ class ProductRepository
 
         $product = $this->_saveProductHashtags($input, $product);
 
-        return $product;
+        return $product->load(['subrubro.rubro', 'product_hashtags', 'product_prices']);
     }
 
     public function update(array $input, Product $product): Product
@@ -109,7 +109,7 @@ class ProductRepository
 
         $product = $this->_saveProductHashtags($input, $product);
 
-        return $product;
+        return $product->load(['subrubro.rubro', 'product_hashtags', 'product_prices']);
     }
 
     public function delete($product): bool
@@ -119,6 +119,15 @@ class ProductRepository
         $product->save();
 
         return $product->delete();
+    }
+
+    public function upload(array $input, Product $product): Product
+    {
+        $product->fill($input);
+
+        $product->saveOrFail();
+
+        return $product;
     }
 
     private function _saveProductPrices($input, Product $product): Product

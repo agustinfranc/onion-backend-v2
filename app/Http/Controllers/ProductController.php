@@ -61,9 +61,7 @@ class ProductController extends Controller
 
         $validatedData = array_merge($request->all(), $validatedData);
 
-        $product = $repository->save($validatedData, $commerce);
-
-        return $product->load(['subrubro.rubro', 'product_hashtags', 'product_prices']);
+        return $repository->save($validatedData, $commerce);
     }
 
     /**
@@ -93,7 +91,7 @@ class ProductController extends Controller
 
         DB::commit();
 
-        return $product->load(['subrubro.rubro', 'product_hashtags', 'product_prices']);
+        return $product;
     }
 
     /**
@@ -114,7 +112,7 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function upload(Request $request, Product $product)
+    public function upload(Request $request, Product $product, ProductRepository $repository)
     {
         // todo: create request to validate it (size, extension...)
 
@@ -124,11 +122,13 @@ class ProductController extends Controller
 
         $path = $request->file('image')->store('images', 'public');
 
-        // $product->avatar_dirname = env('APP_URL', 'https://api.onion.ar') . '/storage/' . $path;
-        $product->avatar_dirname = 'https://api.onion.ar/storage/' . $path;
-        $product->avatar = '';
+        $input = [
+            // 'avatar_dirname' => env('APP_URL', 'https://api.onion.ar') . '/storage/' . $path,
+            'avatar_dirname' => 'https://api.onion.ar/storage/' . $path,
+            'avatar' => '',
+        ];
 
-        $product->save();
+        $product = $repository->upload($input, $product);
 
         return response($product);
     }

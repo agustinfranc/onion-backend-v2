@@ -11,7 +11,7 @@ class Product extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['code', 'name', 'price', 'description', 'disabled'];
+    protected $fillable = ['code', 'name', 'price', 'description', 'disabled', 'avatar', 'avatar_dirname'];
 
     /**
      * Relationships
