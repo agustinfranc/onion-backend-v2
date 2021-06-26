@@ -127,4 +127,33 @@ class ShowCommerceTest extends TestCase
             ->assertJsonPath('0.name', $commerce->name)
             ->assertJsonPath('1.name', $commerce2->name);
     }
+
+    public function test_commerce_not_found()
+    {
+        $fakeCommerceName = 'fake-name';
+
+
+        $response = $this->get('/api/' . $fakeCommerceName);
+
+
+        $this->assertGuest($guard = null);
+
+        $response->assertStatus(404);
+    }
+
+    public function test_cannot_show_commerce_authenticated()
+    {
+        $commerce = Commerce::factory()->create();
+
+        $user = User::factory()->create();
+
+
+        $response = $this->actingAs($user, 'sanctum')
+            ->get('/api/auth/commerces/' . $commerce->id);
+
+
+        $this->assertAuthenticated('sanctum');
+
+        $response->assertStatus(404);
+    }
 }
