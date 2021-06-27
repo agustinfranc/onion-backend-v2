@@ -10,28 +10,6 @@ use Illuminate\Testing\Fluent\AssertableJson;
 
 class ShowCommerceTest extends TestCase
 {
-    private $_commerceStructure = [
-        'id',
-        'name',
-        'fullname',
-        'cover_dirname',
-        'avatar_dirname',
-        'whatsapp_number',
-        'phone_number',
-        'instagram_account',
-        'facebook_account',
-        'youtube_account',
-        'tiktok_account',
-        'maps_account',
-        'dark_theme',
-        'has_action_buttons',
-        'has_footer',
-        'currency_id',
-        'created_at',
-        'updated_at',
-        'deleted_at',
-    ];
-
     public function setUp(): void
     {
         parent::setUp();
@@ -58,10 +36,11 @@ class ShowCommerceTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJsonStructure(
-                array_merge($this->_commerceStructure, [
-                    'rubros',
-                    'currency',
-                ]))
+                array_merge(
+                    array_keys($commerce->toArray()),
+                    ['rubros', 'currency']
+                )
+            )
             ->assertJsonPath('name', $commerce->name);
     }
 
@@ -77,7 +56,7 @@ class ShowCommerceTest extends TestCase
 
         $response->assertOk()
             ->assertJsonStructure([
-                '*' => $this->_commerceStructure
+                '*' => array_keys($commerce->toArray())
             ])
             ->assertJsonPath('0.name', $commerce->name)
             ->assertJsonPath('1.name', $commerce2->name);
@@ -99,7 +78,7 @@ class ShowCommerceTest extends TestCase
         $this->assertAuthenticated('sanctum');
 
         $response->assertStatus(200)
-            ->assertJsonStructure($this->_commerceStructure)
+            ->assertJsonStructure(array_keys($commerce->toArray()))
             ->assertJsonPath('name', $commerce->name);
     }
 
@@ -122,7 +101,7 @@ class ShowCommerceTest extends TestCase
 
         $response->assertOk()
             ->assertJsonStructure([
-                '*' => $this->_commerceStructure
+                '*' => array_keys($commerce->toArray())
             ])
             ->assertJsonPath('0.name', $commerce->name)
             ->assertJsonPath('1.name', $commerce2->name);
