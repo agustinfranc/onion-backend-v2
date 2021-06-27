@@ -6,7 +6,7 @@ use App\Models\User;
 
 class UserRepository
 {
-    public function getByEmail(string $email): User
+    public function getByEmail(string $email): ?User
     {
         $user = User::whereEmail($email)->first();
 
