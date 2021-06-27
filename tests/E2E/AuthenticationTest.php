@@ -56,6 +56,29 @@ class AuthenticationTest extends TestCase
         $response->assertOk();
     }
 
+    public function test_show_user_authenticated()
+    {
+        $user = User::factory()->create();
+
+
+        $response = $this->actingAs($user, 'sanctum')
+            ->getJson('/api/auth/me');
+
+
+        $this->assertAuthenticated('sanctum');
+
+        $response->assertOk()
+            ->assertJsonStructure(
+                array_merge(
+                    array_keys($user->toArray()),
+                    ['commerces', 'token']
+                )
+            )
+            ->assertJsonFragment(
+                $user->toArray()
+            );
+    }
+
     public function test_user_cannot_login_for_invalid_credentials()
     {
         $user = User::factory()->create();
@@ -66,5 +89,14 @@ class AuthenticationTest extends TestCase
 
         $response->assertStatus(401)
             ->assertJson(["error" => "Usuario y/o contraseña incorrectos"]);
+    }
+
+    public function test_user_is_not_authenticated()
+    {
+        $response = $this->getJson('/api/auth/me');
+
+
+        $response->assertStatus(401)
+            ->assertJson(['message' => 'Unauthenticated.']);
     }
 }
