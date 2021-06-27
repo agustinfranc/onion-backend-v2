@@ -46,8 +46,8 @@ class ShowCommerceTest extends TestCase
 
     public function test_show_commerces_unauthenticated()
     {
-        $commerce = Commerce::factory()->create();
-        $commerce2 = Commerce::factory()->create();
+        $commerces = Commerce::factory()->count(2)->create();
+
 
         $response = $this->get('/api/commerces');
 
@@ -56,16 +56,15 @@ class ShowCommerceTest extends TestCase
 
         $response->assertOk()
             ->assertJsonStructure([
-                '*' => array_keys($commerce->toArray())
+                '*' => array_keys($commerces[0]->toArray())
             ])
-            ->assertJsonPath('0.name', $commerce->name)
-            ->assertJsonPath('1.name', $commerce2->name);
+            ->assertJsonPath('0.name', $commerces[0]->name)
+            ->assertJsonPath('1.name', $commerces[1]->name);
     }
 
     public function test_show_commerce_authenticated()
     {
         $commerce = Commerce::factory()->create();
-
         $user = User::factory()->create();
 
         $commerce->users()->attach($user->id);
@@ -84,13 +83,12 @@ class ShowCommerceTest extends TestCase
 
     public function test_show_commerces_authenticated()
     {
-        $commerce = Commerce::factory()->create();
-        $commerce2 = Commerce::factory()->create();
+        $commerces = Commerce::factory()->count(2)->create();
 
         $user = User::factory()->create();
 
-        $commerce->users()->attach($user->id);
-        $commerce2->users()->attach($user->id);
+        $commerces[0]->users()->attach($user->id);
+        $commerces[1]->users()->attach($user->id);
 
 
         $response = $this->actingAs($user, 'sanctum')
@@ -101,10 +99,10 @@ class ShowCommerceTest extends TestCase
 
         $response->assertOk()
             ->assertJsonStructure([
-                '*' => array_keys($commerce->toArray())
+                '*' => array_keys($commerces[0]->toArray())
             ])
-            ->assertJsonPath('0.name', $commerce->name)
-            ->assertJsonPath('1.name', $commerce2->name);
+            ->assertJsonPath('0.name', $commerces[0]->name)
+            ->assertJsonPath('1.name', $commerces[1]->name);
     }
 
     public function test_commerce_not_found()
