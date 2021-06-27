@@ -3,24 +3,13 @@
 namespace Tests\E2E;
 
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use Illuminate\Support\Facades\DB;
 
 class AuthenticationTest extends TestCase
 {
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        DB::beginTransaction();
-    }
-
-    public function tearDown(): void
-    {
-        DB::rollBack();
-
-        parent::tearDown();
-    }
+    use RefreshDatabase;
 
     public function test_user_can_login()
     {

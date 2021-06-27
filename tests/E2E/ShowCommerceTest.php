@@ -4,25 +4,14 @@ namespace Tests\E2E;
 
 use App\Models\Commerce;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Testing\Fluent\AssertableJson;
 
 class ShowCommerceTest extends TestCase
 {
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        DB::beginTransaction();
-    }
-
-    public function tearDown(): void
-    {
-        DB::rollBack();
-
-        parent::tearDown();
-    }
+    use RefreshDatabase;
 
     public function test_show_commerce_unauthenticated()
     {
