@@ -66,8 +66,10 @@ class CommerceController extends Controller
      */
     public function update(Request $request, Commerce $commerce, CommerceRepository $repository)
     {
+        $commerceRequest = new CommerceRequest;
+
         $validatedData = $request->validate([
-            'fullname' => 'required|max:255',
+            'fullname' => $commerceRequest->rules()['fullname'],
         ]);
 
         return $repository->update($validatedData, $commerce);
