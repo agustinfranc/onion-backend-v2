@@ -47,6 +47,10 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
+        if (!$request->user()->currentAccessToken()) {
+            return true;
+        }
+
         return response()->json($request->user()->currentAccessToken()->delete());
     }
 
