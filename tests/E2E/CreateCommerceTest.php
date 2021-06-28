@@ -31,7 +31,7 @@ class CreateCommerceTest extends TestCase
         $this->assertAuthenticated('sanctum');
         $this->assertTrue(!! Commerce::ofUser($user)->first());
 
-        $response->assertStatus(201)
+        $response->assertCreated()
             ->assertJson(['id' => $commerceDB->id]);
 
     }
@@ -92,7 +92,7 @@ class CreateCommerceTest extends TestCase
             ->putJson('/api/auth/commerces/' . $commerce->id, ['fullname' => 'Custom Fake Fullname']);
 
 
-        $response->assertStatus(401);
+        $response->assertUnauthorized();
     }
 
     public function test_cannot_create_commerce_name_is_taken()

@@ -23,7 +23,7 @@ class ShowCommerceTest extends TestCase
 
         $this->assertGuest($guard = null);
 
-        $response->assertStatus(200)
+        $response->assertOk()
             ->assertJsonStructure(
                 array_merge(
                     array_keys($commerce->toArray()),
@@ -65,7 +65,7 @@ class ShowCommerceTest extends TestCase
 
         $this->assertAuthenticated('sanctum');
 
-        $response->assertStatus(200)
+        $response->assertOk()
             ->assertJsonStructure(array_keys($commerce->toArray()))
             ->assertJsonPath('name', $commerce->name);
     }
@@ -104,10 +104,10 @@ class ShowCommerceTest extends TestCase
 
         $this->assertGuest($guard = null);
 
-        $response->assertStatus(404);
+        $response->assertNotFound();
     }
 
-    public function test_cannot_show_commerce_authenticated()
+    public function test_cannot_show_not_own_commerce()
     {
         $commerce = Commerce::factory()->create();
 
@@ -120,6 +120,9 @@ class ShowCommerceTest extends TestCase
 
         $this->assertAuthenticated('sanctum');
 
-        $response->assertStatus(404);
+        $this->expectException('Symfony\Component\HttpKernel\Exception\HttpException');
+
+        $response->assertUnauthorized()
+            ->assertJsonStructure(['message']);
     }
 }
