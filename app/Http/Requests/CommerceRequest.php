@@ -24,7 +24,7 @@ class CommerceRequest extends FormRequest
     public function rules()
     {
         return [
-            'fullname' => 'required|string|max:50',
+            'fullname' => 'required|string|max:50|unique:commerces',
             'whatsapp_number' => 'nullable|string|max:20',
             'instagram_account' => 'nullable|string|max:30',
             'currency.id' => 'required|exists:currencies,id',
