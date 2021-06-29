@@ -49,7 +49,7 @@ class ProductRepository
 
         $product->subrubro()->associate($subrubro);
 
-        $commerce->rubros()->syncWithoutDetaching($input['rubro']['id']);
+        $commerce->rubros()->syncWithoutDetaching($subrubro->rubro->id);
         $commerce->subrubros()->syncWithoutDetaching($subrubroId);
 
         $product->fill($input);
@@ -94,11 +94,9 @@ class ProductRepository
             $product->refresh();
         }
 
-        $rubroId = $product->subrubro->rubro->id;
-
         $commerce = Commerce::find($product->commerce_id);
 
-        $commerce->rubros()->syncWithoutDetaching($rubroId);
+        $commerce->rubros()->syncWithoutDetaching($product->subrubro->rubro->id);
         $commerce->subrubros()->syncWithoutDetaching($product->subrubro->id);
 
         $product->fill($input);

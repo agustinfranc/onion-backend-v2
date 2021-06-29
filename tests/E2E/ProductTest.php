@@ -14,8 +14,13 @@ class ProductTest extends TestCase
 
     public function test_show_product()
     {
-        $product = Product::factory()->create();
         $user = User::factory()->create();
+        $commerce = Commerce::factory()->create();
+        $product = Product::factory()->create([
+            'commerce_id' => $commerce->id,
+        ]);
+
+        $commerce->users()->attach($user->id);
 
 
         $response = $this->actingAs($user, 'sanctum')
@@ -26,5 +31,28 @@ class ProductTest extends TestCase
 
         $response->assertOk()
             ->assertJson($product->toArray());
+    }
+
+    public function test_create_product()
+    {
+        $commerce = Commerce::factory()->create();
+        $user = User::factory()->create();
+        $product = Product::factory()->make([
+            'commerce_id' => $commerce->id,
+            ])->toArray();
+
+        $product['subrubro']['id'] = $product['subrubro_id'];
+
+        $commerce->users()->attach($user->id);
+
+
+        $response = $this->actingAs($user, 'sanctum')
+            ->postJson('/api/auth/commerces/' . $commerce->id . '/products', $product);
+
+
+        $this->assertAuthenticated('sanctum');
+
+        $response->assertCreated()
+            ->assertJson($product);
     }
 }

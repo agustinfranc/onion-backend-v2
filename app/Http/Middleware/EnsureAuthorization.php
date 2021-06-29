@@ -24,7 +24,13 @@ class EnsureAuthorization
         $repository = new CommerceRepository;
         $userCommerces = $repository->getAll([], $request->user());
 
-        if ($request->commerce && !$userCommerces->contains($request->commerce->id)) {
+        $commerce = $request->commerce;
+
+        if ($request->product) {
+            $commerce = $request->product->commerce;
+        }
+
+        if ($commerce && !$userCommerces->contains($commerce->id)) {
             //! Reemplazar por exception
             abort(401, 'User has no permission to access this commerce');
         }
