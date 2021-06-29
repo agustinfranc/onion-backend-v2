@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CommerceRequest;
 use App\Models\Commerce;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Repositories\CommerceRepository;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class CommerceController extends Controller
 {
@@ -17,13 +15,9 @@ class CommerceController extends Controller
      * @param  Illuminate\Http\Request  $request
      * @return object response
      */
-    public function index(Request $request)
+    public function index(Request $request, CommerceRepository $repository)
     {
-        if ($request->user()) {
-            return Commerce::ofUser($request->user())->get();
-        }
-
-        return Commerce::all();
+        return $repository->getAll($request->all(), $request->user());
     }
 
     /**
@@ -33,9 +27,9 @@ class CommerceController extends Controller
      * @param  \App\Models\Commerce  $commerce
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, Commerce $commerce)
+    public function show(Request $request, Commerce $commerce, CommerceRepository $repository)
     {
-        return $commerce;
+        return $repository->getOne($commerce, $request->user());
     }
 
     /**
@@ -45,43 +39,9 @@ class CommerceController extends Controller
      * @param  string  $commerceName
      * @return object response
      */
-    public function showByName(Request $request, $commerceName)
+    public function showByName(Request $request, string $commerceName, CommerceRepository $repository)
     {
-        $commerce = Commerce::whereName($commerceName)->first();
-
-        if (!$commerce) return response()->json('No commerce found');
-
-        if ($request->input('simplified', false)) {
-            return $commerce;
-        }
-
-        return Commerce::with(['currency', 'rubros' => function (BelongsToMany $query) use ($commerce) {
-            return $query->with(['subrubros' => function (HasMany $query) use ($commerce) {
-                return $query->with(['products' => function (HasMany $query) use ($commerce) {
-                    return $query->with(['product_hashtags', 'product_prices'])->where('commerce_id', $commerce->id);   // me trae los productos solo de ese comercio
-                }, 'commerces' => function (BelongsToMany $query) use ($commerce) {
-                    return $query->where('id', $commerce->id);   // me trae la tabla pivot de commerces_subrubros
-                }])
-                    ->whereHas('commerces', function (Builder $query) use ($commerce) {
-                        return $query->where('commerce_id', $commerce->id);   // me trae los subrubros solo de ese comercio
-                    })
-                    ->whereHas('products', function (Builder $query) use ($commerce) {
-                        return $query->where('commerce_id', $commerce->id);
-                    })
-                    ->orderBy('sort');
-            }])
-                ->whereHas('subrubros', function (Builder $query) use ($commerce) {
-                    return $query->whereHas('commerces', function (Builder $query) use ($commerce) {
-                        return $query->where('commerce_id', $commerce->id);   // me trae los subrubros solo de ese comercio
-                    })
-                        ->whereHas('products', function (Builder $query) use ($commerce) {
-                            return $query->where('commerce_id', $commerce->id);
-                        });
-                })
-                ->where('commerce_id', $commerce->id)
-                ->orderBy('sort');
-        }])
-            ->find($commerce->id);
+        return $repository->getByName($request->all(), $commerceName);
     }
 
     /**
@@ -90,24 +50,11 @@ class CommerceController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CommerceRequest $request, CommerceRepository $repository)
     {
         $user = $request->user();
 
-        $commerce = new Commerce();
-
-        $input = $request->all();
-
-        $input['name'] = Str::slug($input['fullname']);
-
-        $commerce->currency()->associate($input['currency']['id']);
-        $commerce->fill($input);
-
-        $commerce->saveOrFail();
-
-        $commerce->users()->syncWithoutDetaching($user->id);
-
-        return $commerce;
+        return $repository->save($request->all(), $user);
     }
 
     /**
@@ -117,17 +64,15 @@ class CommerceController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Commerce $commerce)
+    public function update(Request $request, Commerce $commerce, CommerceRepository $repository)
     {
+        $commerceRequest = new CommerceRequest;
+
         $validatedData = $request->validate([
-            'fullname' => 'required|max:255',
+            'fullname' => $commerceRequest->rules()['fullname'],
         ]);
 
-        $commerce->fill($validatedData);
-
-        $commerce->save();
-
-        return $commerce;
+        return $repository->update($validatedData, $commerce);
     }
 
     /**
@@ -137,7 +82,7 @@ class CommerceController extends Controller
      * @param  \App\Models\Commerce  $commerce
      * @return \Illuminate\Http\Response
      */
-    public function upload(Request $request, Commerce $commerce)
+    public function upload(Request $request, Commerce $commerce, CommerceRepository $repository): Commerce
     {
         // todo: create request to validate it (size, extension...)
 
@@ -148,22 +93,22 @@ class CommerceController extends Controller
             return response()->json(['error' => 'No se encuentra imagen en la request'], 500);
         }
 
+        $input = [];
+
         if ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
             $path = $request->file('avatar')->store('images', 'public');
 
             // $commerce->avatar_dirname = env('APP_URL', 'https://api.onion.ar') . '/storage/' . $path;
-            $commerce->avatar_dirname = 'https://api.onion.ar/storage/' . $path;
+            $input['avatar_dirname'] = 'https://api.onion.ar/storage/' . $path;
         }
 
         if ($request->hasFile('cover') && $request->file('cover')->isValid()) {
             $path = $request->file('cover')->store('images', 'public');
 
             // $commerce->cover_dirname = env('APP_URL', 'https://api.onion.ar') . '/storage/' . $path;
-            $commerce->cover_dirname = 'https://api.onion.ar/storage/' . $path;
+            $input['cover_dirname'] = 'https://api.onion.ar/storage/' . $path;
         }
 
-        $commerce->save();
-
-        return response($commerce);
+        return $repository->update($input, $commerce);
     }
 }

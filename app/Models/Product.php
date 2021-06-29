@@ -5,13 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Http\Request;
 
 class Product extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, HasFactory;
 
-    protected $fillable = ['code', 'name', 'price', 'description', 'disabled'];
+    protected $fillable = ['code', 'name', 'price', 'description', 'disabled', 'avatar', 'avatar_dirname'];
 
     /**
      * Relationships
@@ -51,17 +52,5 @@ class Product extends Model
     public function scopeCommerce($query, Commerce $commerce)
     {
         return $query->where('commerce_id', '=', $commerce->id);
-    }
-
-    /**
-     * Scope a query to only include certain commerce by authenticated user
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  \App\Models\Commerce  $commerce
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeCommerceByUser($query)
-    {
-        //return $query->where('commerce_id', '=', $commerce->id);
     }
 }

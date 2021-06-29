@@ -24,10 +24,14 @@ class CommerceRequest extends FormRequest
     public function rules()
     {
         return [
-            'fullname' => 'required|string|max:255',
+            'fullname' => 'required|string|max:50|unique:commerces',
             'whatsapp_number' => 'nullable|string|max:20',
             'instagram_account' => 'nullable|string|max:30',
-            // 'currency' => 'required|exists:currencies,id',
+            'currency.id' => 'required|exists:currencies,id',
+            'cover_dirname' => 'nullable|url',
+            'avatar_dirname' => 'nullable|url',
+            'has_action_buttons' => 'boolean',
+            'has_footer' => 'boolean',
         ];
     }
 }

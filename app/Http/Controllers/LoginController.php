@@ -2,11 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Commerce;
-use App\Models\User;
+use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
@@ -18,7 +15,7 @@ class LoginController extends Controller
      *
      * @return Response
      */
-    public function authenticate(Request $request)
+    public function authenticate(Request $request, UserRepository $repository)
     {
         $validatedData = $request->validate([
             'email' => 'required|email',
@@ -26,38 +23,33 @@ class LoginController extends Controller
             'device_name' => 'nullable',
         ]);
 
-        $user = User::where('email', $validatedData['email'])->first();
+        $user = $repository->getByEmail($validatedData['email']);
 
         if (!$user || !Hash::check($validatedData['password'], $user->password)) {
             return response()->json(['error' => 'Usuario y/o contraseña incorrectos'], 401);
         }
 
-        $user->commerces = Commerce::ofUser($user)->get();
-        $user->token = $user->createToken($validatedData['device_name'] ?? 'token-name')->plainTextToken;
+        $user = $repository->getOne($user);
 
-        return response()->json($user);
+        return $user;
     }
 
-    public function me(Request $request)
+    public function me(Request $request, UserRepository $repository)
     {
         if (!$request->user()) {
             return response()->json(['error' => 'error']);
         }
 
-        $rsp = $request->user();
-        $rsp->commerces = Commerce::ofUser($request->user())->get();
+        $user = $repository->getOne($request->user());
 
-        return response()->json($rsp);
+        return $user;
     }
 
     public function logout(Request $request)
     {
-        if (!$request->user()) {
-            return response()->json(['error' => 'error']);
+        if (!$request->user()->currentAccessToken()) {
+            return true;
         }
-
-        $user = User::find($request->user()->id);
-        if ($user->currentAccessToken()) $user->currentAccessToken()->delete();
 
         return response()->json($request->user()->currentAccessToken()->delete());
     }
