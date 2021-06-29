@@ -4,10 +4,8 @@ namespace Tests\E2E;
 
 use App\Models\Commerce;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Testing\Fluent\AssertableJson;
 
 class CreateCommerceTest extends TestCase
@@ -19,7 +17,7 @@ class CreateCommerceTest extends TestCase
         $commerce = Commerce::factory()->make()->toArray();
         $user = User::factory()->create();
 
-        $commerce['currency'] = ['id' => 1];
+        $commerce['currency']['id'] = 1;
 
 
         $response = $this->actingAs($user, 'sanctum')
