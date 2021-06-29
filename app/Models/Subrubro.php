@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Subrubro extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, HasFactory;
 
     /**
      * Relationships
@@ -15,12 +16,12 @@ class Subrubro extends Model
 
     public function products()
     {
-        return $this->hasMany('App\Models\Product');
+        return $this->hasMany(Product::class);
     }
 
     public function rubro()
     {
-        return $this->belongsTo('App\Models\Rubro');
+        return $this->belongsTo(Rubro::class);
     }
 
     public function commerces()
