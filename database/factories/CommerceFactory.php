@@ -23,9 +23,11 @@ class CommerceFactory extends Factory
      */
     public function definition()
     {
+        $fakePhrase = $this->faker->catchPhrase;
+
         return [
-            'name' => Str::slug($this->faker->catchPhrase),
-            'fullname' => $this->faker->catchPhrase,
+            'name' => Str::slug($fakePhrase),
+            'fullname' => $fakePhrase,
             'cover_dirname' => 'https://picsum.photos/510/300?random',
             'avatar_dirname' => 'https://picsum.photos/510/300?random',
             'currency_id' => Currency::factory(),
