@@ -55,4 +55,48 @@ class ProductTest extends TestCase
         $response->assertCreated()
             ->assertJson($product);
     }
+
+    public function test_update_product()
+    {
+        $commerce = Commerce::factory()->create();
+        $user = User::factory()->create();
+        $product = Product::factory()->create([
+            'commerce_id' => $commerce,
+        ])->toArray();
+
+        $product['subrubro']['id'] = $product['subrubro_id'];
+        $product['name'] = 'Fake Custom Name';
+
+        $commerce->users()->attach($user->id);
+
+
+        $response = $this->actingAs($user, 'sanctum')
+            ->putJson('/api/auth/products/' . $product['id'], $product);
+
+
+        $this->assertAuthenticated('sanctum');
+
+        $response->assertOk()
+            ->assertJson($product);
+    }
+
+    public function test_delete_product()
+    {
+        $commerce = Commerce::factory()->create();
+        $user = User::factory()->create();
+        $product = Product::factory()->create([
+            'commerce_id' => $commerce,
+        ])->toArray();
+
+        $commerce->users()->attach($user->id);
+
+
+        $response = $this->actingAs($user, 'sanctum')
+            ->deleteJson('/api/auth/products/' . $product['id']);
+
+
+        $this->assertAuthenticated('sanctum');
+
+        $response->assertOk();
+    }
 }

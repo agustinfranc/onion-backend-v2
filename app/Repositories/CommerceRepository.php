@@ -77,14 +77,14 @@ class CommerceRepository
 
         $input['name'] = Str::slug($input['fullname']);
 
-        $commerce->currency()->associate($input['currency']['id']);
+        $commerce->currency()->associate(isset($input['currency']['id']) ? $input['currency']['id'] : $input['currency_id']);
         $commerce->fill($input);
 
         $commerce->saveOrFail();
 
         $commerce->users()->syncWithoutDetaching($user->id);
 
-        return $commerce;
+        return $commerce->load('users');
     }
 
     public function update(array $input, Commerce $commerce): Commerce

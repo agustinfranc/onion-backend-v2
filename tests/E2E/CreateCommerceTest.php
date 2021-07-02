@@ -17,21 +17,17 @@ class CreateCommerceTest extends TestCase
         $commerce = Commerce::factory()->make()->toArray();
         $user = User::factory()->create();
 
-        $commerce['currency']['id'] = 1;
+        $commerce['currency_id'] = 1;
 
 
         $response = $this->actingAs($user, 'sanctum')
             ->postJson('/api/auth/commerces', $commerce);
 
 
-        $commerceDB = Commerce::firstOrFail();
-
         $this->assertAuthenticated('sanctum');
-        $this->assertTrue(!! Commerce::ofUser($user)->first());
 
         $response->assertCreated()
-            ->assertJson(['id' => $commerceDB->id]);
-
+            ->assertJson($commerce);
     }
 
     public function test_can_update_commerce()
@@ -51,19 +47,6 @@ class CreateCommerceTest extends TestCase
         $response->assertOk()
             ->assertJson(['fullname' => 'Custom Fake Fullname']);
     }
-
-    // public function test_avatars_can_be_uploaded()
-    // {
-    //     Storage::fake('avatars');
-
-    //     $file = UploadedFile::fake()->image('avatar.jpg');
-
-    //     $response = $this->post('/avatar', [
-    //         'avatar' => $file,
-    //     ]);
-
-    //     Storage::disk('avatars')->assertExists($file->hashName());
-    // }
 
     public function test_admin_can_update_any_commerce()
     {
