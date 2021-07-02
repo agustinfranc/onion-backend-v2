@@ -79,4 +79,24 @@ class ProductTest extends TestCase
         $response->assertOk()
             ->assertJson($product);
     }
+
+    public function test_delete_product()
+    {
+        $commerce = Commerce::factory()->create();
+        $user = User::factory()->create();
+        $product = Product::factory()->create([
+            'commerce_id' => $commerce,
+        ])->toArray();
+
+        $commerce->users()->attach($user->id);
+
+
+        $response = $this->actingAs($user, 'sanctum')
+            ->deleteJson('/api/auth/products/' . $product['id']);
+
+
+        $this->assertAuthenticated('sanctum');
+
+        $response->assertOk();
+    }
 }
