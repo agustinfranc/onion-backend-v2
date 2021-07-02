@@ -48,19 +48,6 @@ class CreateCommerceTest extends TestCase
             ->assertJson(['fullname' => 'Custom Fake Fullname']);
     }
 
-    // public function test_avatars_can_be_uploaded()
-    // {
-    //     Storage::fake('avatars');
-
-    //     $file = UploadedFile::fake()->image('avatar.jpg');
-
-    //     $response = $this->post('/avatar', [
-    //         'avatar' => $file,
-    //     ]);
-
-    //     Storage::disk('avatars')->assertExists($file->hashName());
-    // }
-
     public function test_admin_can_update_any_commerce()
     {
         $commerce = Commerce::factory()->create();
