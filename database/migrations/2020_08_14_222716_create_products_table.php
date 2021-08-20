@@ -19,7 +19,7 @@ class CreateProductsTable extends Migration
             $table->unsignedSmallInteger('commerce_id');
             $table->integer('code');
             $table->string('name');
-            $table->string('description')->nullable();
+            $table->text('description')->nullable();
             $table->float('price', 8, 2)->nullable();
             $table->string('avatar')->nullable();
             $table->string('avatar_dirname')->nullable();
