@@ -25,7 +25,7 @@ class ProductRequest extends FormRequest
     public function rules()
     {
         return [
-            'description' => 'max:255',
+            'description' => 'max:510',
             'disabled' => 'boolean',
             'name' => 'required|max:255',
             'price' => 'nullable',
