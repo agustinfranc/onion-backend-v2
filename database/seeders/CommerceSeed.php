@@ -15,8 +15,8 @@ class CommerceSeed extends Seeder
     public function run()
     {
         DB::table('commerces')->insert([
-            ['id' => 1, 'name' => 'marlon', 'fullname' => 'Marlon Resto Bar', 'assets_dirname' => 'https://onion.com.ar/img/marlon/'],
-            ['id' => 2, 'name' => 'plaza', 'fullname' => 'Plaza Del Carmen', 'assets_dirname' => 'https://onion.com.ar/img/plaza/'],
+            ['id' => 1, 'name' => 'marlon', 'fullname' => 'Marlon Resto Bar', 'cover_dirname' => 'https://onion.com.ar/img/marlon/'],
+            ['id' => 2, 'name' => 'plaza', 'fullname' => 'Plaza Del Carmen', 'cover_dirname' => 'https://onion.com.ar/img/plaza/'],
         ]);
     }
 }

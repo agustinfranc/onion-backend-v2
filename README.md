@@ -10,6 +10,24 @@ Onion is a company in which we take care of digitizing your business to anticipa
 
 PHP 7.3 and later.
 
+## Build Setup With Sail (reccomended)
+
+```bash
+# install dependencies
+$ composer install
+
+# create .env and .env.testing from .env.example
+$ touch .env && touch .env.example
+
+# start sail
+$ vendor/bin/sail up
+
+# run migrations
+$ vendor/bin/sail artisan migrate --seed
+
+# run tests
+$ vendor/bin/sail test
+```
 ## Build Setup
 
 ```bash

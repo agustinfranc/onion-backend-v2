@@ -92,7 +92,6 @@ class CreateCommerceTest extends TestCase
         $this->assertAuthenticated('sanctum');
 
         $response->assertStatus(422)
-            ->assertJson(["message" => "The given data was invalid."])
             ->assertJsonStructure(['message', 'errors']);
     }
 }

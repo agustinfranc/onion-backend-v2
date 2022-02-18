@@ -32,6 +32,8 @@ Route::middleware('guest')->group(function () {
         Route::get('/', [CommerceController::class, 'showByName']);
         Route::get('/all', [CommerceController::class, 'showByName'])->name('showByName');
     });
+
+    Route::get('/products/{product}', [ProductController::class, 'show'])->name('guest.products.show');
 });
 
 Route::middleware(['auth:sanctum', 'authorized'])->group(function () {
