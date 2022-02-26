@@ -3,6 +3,10 @@
 namespace Tests\E2E;
 
 use App\Models\Commerce;
+use App\Models\CommerceBranches;
+use App\Models\Product;
+use App\Models\Rubro;
+use App\Models\Subrubro;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -16,6 +20,18 @@ class ShowCommerceTest extends TestCase
     public function test_show_commerce_unauthenticated()
     {
         $commerce = Commerce::factory()->create();
+        CommerceBranches::factory()->count(2)->create([
+            'commerce_id' => $commerce->id,
+        ]);
+        $rubro = Rubro::factory()->create();
+        $product = Product::factory()->create([
+            'commerce_id' => $commerce->id,
+            'subrubro_id' => Subrubro::factory()->create([
+                'rubro_id' => $rubro->id,
+            ]),
+        ]);
+        $commerce->rubros()->attach($rubro->id);
+        $commerce->subrubros()->attach($product->subrubro_id);
 
 
         $response = $this->get('/api/' . $commerce->name);

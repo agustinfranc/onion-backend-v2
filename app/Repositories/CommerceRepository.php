@@ -21,7 +21,7 @@ class CommerceRepository
             return $commerce;
         }
 
-        return $commerce->load(['currency', 'rubros' => function (BelongsToMany $query) use ($commerce) {
+        return $commerce->load(['branches', 'currency', 'rubros' => function (BelongsToMany $query) use ($commerce) {
             return $query->with(['subrubros' => function (HasMany $query) use ($commerce) {
                 return $query->with(['products' => function (HasMany $query) use ($commerce) {
                     return $query->with(['product_hashtags', 'product_prices'])->where('commerce_id', $commerce->id);   // me trae los productos solo de ese comercio
