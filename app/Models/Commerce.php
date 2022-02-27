@@ -43,6 +43,12 @@ class Commerce extends Model
         return $this->belongsTo('App\Models\Currency');
     }
 
+    // Sucursales
+    public function branches()
+    {
+        return $this->hasMany(CommerceBranches::class);
+    }
+
     /**
      * Scopes
      */

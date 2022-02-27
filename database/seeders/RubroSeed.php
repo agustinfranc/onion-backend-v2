@@ -19,14 +19,17 @@ class RubroSeed extends Seeder
             [
                 'id' => 1,
                 'name' => 'Cafeteria',
+                'link_name' => 'cafeteria',
             ],
             [
                 'id' => 2,
                 'name' => 'Cocina',
+                'link_name' => 'cocina',
             ],
             [
                 'id' => 3,
                 'name' => 'Bebidas',
+                'link_name' => 'bebidas',
             ],
         ]);
     }

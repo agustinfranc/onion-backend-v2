@@ -23,6 +23,7 @@ class ProductSeed extends Seeder
                 'name' => 'Espresso',
                 'description' => Str::random(100),
                 'price' => random_int(10, 999),
+                'avatar_dirname' => 'https://api.onion.ar/storage/images/xd6nUAyy74DXgMIeR4JvzZ8yZGtHHcE8alU3jidv.jpg',
             ],
             [
                 'code' => 2,
@@ -31,6 +32,7 @@ class ProductSeed extends Seeder
                 'name' => 'Machiatto',
                 'description' => Str::random(100),
                 'price' => random_int(10, 999),
+                'avatar_dirname' => 'https://api.onion.ar/storage/images/xd6nUAyy74DXgMIeR4JvzZ8yZGtHHcE8alU3jidv.jpg',
             ],
             [
                 'code' => 3,
@@ -39,6 +41,25 @@ class ProductSeed extends Seeder
                 'name' => 'Lemon Pie',
                 'description' => Str::random(100),
                 'price' => random_int(10, 999),
+                'avatar_dirname' => 'https://api.onion.ar/storage/images/xd6nUAyy74DXgMIeR4JvzZ8yZGtHHcE8alU3jidv.jpg',
+            ],
+            [
+                'code' => 9,
+                'commerce_id' => 1,
+                'subrubro_id' => 2,
+                'name' => 'Strawberry Pie',
+                'description' => Str::random(100),
+                'price' => random_int(10, 999),
+                'avatar_dirname' => 'https://api.onion.ar/storage/images/xd6nUAyy74DXgMIeR4JvzZ8yZGtHHcE8alU3jidv.jpg',
+            ],
+            [
+                'code' => 10,
+                'commerce_id' => 1,
+                'subrubro_id' => 2,
+                'name' => 'Melon Pie',
+                'description' => Str::random(100),
+                'price' => random_int(10, 999),
+                'avatar_dirname' => 'https://api.onion.ar/storage/images/xd6nUAyy74DXgMIeR4JvzZ8yZGtHHcE8alU3jidv.jpg',
             ],
             [
                 'code' => 4,
@@ -47,6 +68,7 @@ class ProductSeed extends Seeder
                 'name' => 'Medialuna',
                 'description' => Str::random(100),
                 'price' => random_int(10, 999),
+                'avatar_dirname' => 'https://api.onion.ar/storage/images/xd6nUAyy74DXgMIeR4JvzZ8yZGtHHcE8alU3jidv.jpg',
             ],
             [
                 'code' => 5,
@@ -55,6 +77,7 @@ class ProductSeed extends Seeder
                 'name' => 'Lomo',
                 'description' => Str::random(100),
                 'price' => random_int(100, 999),
+                'avatar_dirname' => 'https://api.onion.ar/storage/images/xd6nUAyy74DXgMIeR4JvzZ8yZGtHHcE8alU3jidv.jpg',
             ],
             [
                 'code' => 6,
@@ -63,6 +86,7 @@ class ProductSeed extends Seeder
                 'name' => 'Pollo',
                 'description' => Str::random(100),
                 'price' => random_int(10, 999),
+                'avatar_dirname' => 'https://api.onion.ar/storage/images/xd6nUAyy74DXgMIeR4JvzZ8yZGtHHcE8alU3jidv.jpg',
             ],
             [
                 'code' => 7,
@@ -71,6 +95,7 @@ class ProductSeed extends Seeder
                 'name' => 'Levite',
                 'description' => Str::random(100),
                 'price' => random_int(10, 999),
+                'avatar_dirname' => 'https://api.onion.ar/storage/images/xd6nUAyy74DXgMIeR4JvzZ8yZGtHHcE8alU3jidv.jpg',
             ],
             [
                 'code' => 8,
@@ -79,6 +104,7 @@ class ProductSeed extends Seeder
                 'name' => 'Coca',
                 'description' => Str::random(100),
                 'price' => random_int(10, 999),
+                'avatar_dirname' => 'https://api.onion.ar/storage/images/xd6nUAyy74DXgMIeR4JvzZ8yZGtHHcE8alU3jidv.jpg',
             ],
         ]);
     }
