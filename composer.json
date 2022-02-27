@@ -1,12 +1,22 @@
 {
-    "name": "laravel/laravel",
+    "name": "onion/api",
+    "version": "1.0.0",
     "type": "project",
-    "description": "The Laravel Framework.",
+    "description": "Onion.ar project.",
+    "homepage": "https://onion.ar",
     "keywords": [
-        "framework",
-        "laravel"
+        "menu",
+        "delivery",
+        "digital"
     ],
     "license": "MIT",
+    "authors": [
+        {
+            "name": "Agustin Amato",
+            "email": "agustin.amato@pm.me",
+            "role": "Owner/Developer"
+        }
+    ],
     "require": {
         "php": "^8.0.2",
         "doctrine/dbal": "^3.3",
