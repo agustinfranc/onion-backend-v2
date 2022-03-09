@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CommerceController;
 use App\Http\Controllers\GetCombos;
 use Illuminate\Http\Request;
@@ -34,6 +35,8 @@ Route::middleware('guest')->group(function () {
     });
 
     Route::get('/products/{product}', [ProductController::class, 'show'])->name('guest.products.show');
+
+    Route::post('/checkout/preferences', [CheckoutController::class, 'generatePreference'])->name('checkout.preferences.generatePreference');
 });
 
 Route::middleware(['auth:sanctum', 'authorized'])->group(function () {

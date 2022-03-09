@@ -3,18 +3,18 @@
 namespace Database\Factories;
 
 use App\Models\Commerce;
-use App\Models\CommerceBranches;
+use App\Models\CommerceBranch;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
-class CommerceBranchesFactory extends Factory
+class CommerceBranchFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = CommerceBranches::class;
+    protected $model = CommerceBranch::class;
 
     /**
      * Define the model's default state.
