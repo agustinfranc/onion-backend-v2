@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\CommerceBranches;
+use App\Models\CommerceBranch;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call(CommerceSeed::class);
 
-        CommerceBranches::factory(2)->create([
+        CommerceBranch::factory(2)->create([
             'commerce_id' => 1,
         ]);
 

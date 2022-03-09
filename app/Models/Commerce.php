@@ -46,7 +46,7 @@ class Commerce extends Model
     // Sucursales
     public function branches()
     {
-        return $this->hasMany(CommerceBranches::class);
+        return $this->hasMany(CommerceBranch::class);
     }
 
     /**

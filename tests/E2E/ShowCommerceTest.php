@@ -3,7 +3,7 @@
 namespace Tests\E2E;
 
 use App\Models\Commerce;
-use App\Models\CommerceBranches;
+use App\Models\CommerceBranch;
 use App\Models\Product;
 use App\Models\Rubro;
 use App\Models\Subrubro;
@@ -20,7 +20,7 @@ class ShowCommerceTest extends TestCase
     public function test_show_commerce_unauthenticated()
     {
         $commerce = Commerce::factory()->create();
-        CommerceBranches::factory()->count(2)->create([
+        CommerceBranch::factory()->count(2)->create([
             'commerce_id' => $commerce->id,
         ]);
         $rubro = Rubro::factory()->create();
