@@ -12,6 +12,8 @@ class CommerceBranch extends Model
 
     protected $fillable = ['name', 'fullname', 'address', 'whatsapp_number', 'phone_number', 'maps_account'];
 
+    protected $hidden = ['access_token'];
+
     /**
      * Relationships
      */

@@ -14,6 +14,12 @@ class Product extends Model
 
     protected $fillable = ['code', 'name', 'price', 'description', 'disabled', 'avatar', 'avatar_dirname'];
 
+    protected $hidden = ['deleted_at'];
+
+    protected $casts = [
+        'avatar' => 'string',
+    ];
+
     /**
      * Relationships
      */
