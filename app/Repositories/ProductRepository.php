@@ -68,7 +68,6 @@ class ProductRepository
     public function update(array $input, Product $product): Product
     {
         if (isset($input['subrubro']['id'])) {
-
             $product->subrubro()->associate($input['subrubro']['id']);
         } else {
             $product->subrubro()->dissociate();
@@ -76,6 +75,7 @@ class ProductRepository
             // Busco subrubro por si ya existe
             $subrubro = Subrubro::where('name', $input['subrubro'])->first();
 
+            // Si no existe entonces lo creo
             if (!$subrubro) {
                 $subrubro = new Subrubro();
                 $subrubro->name = $input['subrubro'];
@@ -87,6 +87,7 @@ class ProductRepository
                 $subrubro->save();
             }
 
+            // Asocio el subrubro encontrado o creado
             $product->subrubro()->associate($subrubro);
 
             $product->saveOrFail();
