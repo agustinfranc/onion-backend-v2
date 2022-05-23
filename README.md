@@ -25,8 +25,10 @@ $ vendor/bin/sail up
 # run migrations
 $ vendor/bin/sail artisan migrate --seed
 
-# run tests
+# run tests (not run in production)
 $ vendor/bin/sail test
+# after running test refresh database
+vendor/bin/sail artisan migrate:fresh  --seed
 ```
 ## Build Setup
 

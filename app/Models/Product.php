@@ -16,10 +16,6 @@ class Product extends Model
 
     protected $hidden = ['deleted_at'];
 
-    protected $casts = [
-        'avatar' => 'string',
-    ];
-
     /**
      * Relationships
      */
