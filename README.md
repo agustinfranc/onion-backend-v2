@@ -25,11 +25,10 @@ $ vendor/bin/sail up
 # run migrations
 $ vendor/bin/sail artisan migrate --seed
 
-# run tests (not run in production)
+# run tests
 $ vendor/bin/sail test
-# after running test refresh database
-vendor/bin/sail artisan migrate:fresh  --seed
 ```
+
 ## Build Setup
 
 ```bash
@@ -53,7 +52,7 @@ $ php artisan test
 
 This is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 
-****************************
+---
 
 Made with Laravel 8.x
 
