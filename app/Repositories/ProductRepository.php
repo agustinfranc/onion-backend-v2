@@ -19,7 +19,7 @@ class ProductRepository
 
     public function getOne(Product $product): Product
     {
-        return $product->load(['subrubro.rubro', 'product_hashtags', 'product_prices']);
+        return $product->load(['subrubro.rubro', 'product_hashtags', 'product_prices', 'product_options_groupes.product_options']);
     }
 
     public function save(array $input, Commerce $commerce): Product
