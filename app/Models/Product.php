@@ -40,6 +40,11 @@ class Product extends Model
         return $this->hasMany('App\Models\ProductPrice');
     }
 
+    public function product_options_groupes()
+    {
+        return $this->hasMany(ProductOptionsGroupe::class);
+    }
+
     /**
      * Scopes
      */
