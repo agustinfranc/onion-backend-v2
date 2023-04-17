@@ -55,6 +55,6 @@ This is open-sourced software licensed under the [MIT license](https://opensourc
 
 ---
 
-Made with Laravel 8.x
+Made with Laravel 10
 
-https://laravel.com/docs/8.x
+https://laravel.com/docs/10.x
