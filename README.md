@@ -8,7 +8,8 @@ Onion is a company in which we take care of digitizing your business to anticipa
 
 ## Requirements
 
-PHP 7.3 and later.
+PHP 8.1 and later.
+Composer 2.2 and later.
 
 ## Build Setup With Sail (reccomended)
 
