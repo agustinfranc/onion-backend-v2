@@ -155,6 +155,8 @@ class ProductRepository
                     $productPrice->saveOrFail();
                 }
             } else {
+                if (isset($validatedProductPrice['deleted_at'])) return;
+
                 $productPrice = new ProductPrice();
 
                 $productPrice->fill($validatedProductPrice);
@@ -192,6 +194,8 @@ class ProductRepository
                     $productHashtag->saveOrFail();
                 }
             } else {
+                if (isset($validatedProductHashtag['deleted_at'])) return;
+
                 $productHashtag = new ProductHashtag();
 
                 $productHashtag->fill($validatedProductHashtag);

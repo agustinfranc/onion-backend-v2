@@ -38,7 +38,7 @@ class ProductRequest extends FormRequest
             'product_prices.*.price' => 'nullable|numeric',
 
             'product_hashtags' => 'nullable|array',
-            'product_hashtags.*.name' => 'nullable|max:255',
+            'product_hashtags.*.name' => 'sometimes|required_without:product_hashtags.*.deleted_at|max:255',
             'product_hashtags.*.to' => 'nullable|max:255',
         ];
     }
