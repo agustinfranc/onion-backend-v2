@@ -10,6 +10,12 @@ class ProductOptionsGroupe extends Model
 {
     use SoftDeletes, HasFactory;
 
+    protected $casts = [
+        'multiple' => 'boolean',
+        'required' => 'boolean',
+        'countable' => 'boolean',
+    ];
+
     public function product_options()
     {
         return $this->hasMany(ProductOption::class);

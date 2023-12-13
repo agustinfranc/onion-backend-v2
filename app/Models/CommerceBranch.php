@@ -14,6 +14,12 @@ class CommerceBranch extends Model
 
     protected $hidden = ['mp_access_token', 'deleted_at'];
 
+    protected $casts = [
+        'mp_enabled' => 'boolean',
+        'has_delivery' => 'boolean',
+        'has_takeaway' => 'boolean',
+    ];
+
     /**
      * Relationships
      */

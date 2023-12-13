@@ -10,6 +10,10 @@ class Subrubro extends Model
 {
     use SoftDeletes, HasFactory;
 
+    protected $casts = [
+        'is_general' => 'boolean',
+    ];
+
     /**
      * Relationships
      */

@@ -12,7 +12,14 @@ class Commerce extends Model
 {
     use SoftDeletes, HasFactory;
 
-    protected $fillable = ['name', 'fullname', 'cover_dirname', 'avatar_dirname', 'whatsapp_number', 'phone_number' ,'instagram_account', 'facebook_account', 'youtube_account', 'tiktok_account', 'maps_account', 'dark_theme', 'has_action_buttons', 'has_footer'];
+    protected $fillable = ['name', 'fullname', 'cover_dirname', 'avatar_dirname', 'whatsapp_number', 'phone_number', 'instagram_account', 'facebook_account', 'youtube_account', 'tiktok_account', 'maps_account', 'dark_theme', 'has_action_buttons', 'has_footer'];
+
+    protected $casts = [
+        'dark_theme' => 'boolean',
+        'has_action_buttons' => 'boolean',
+        'has_footer' => 'boolean',
+        'can_order' => 'boolean',
+    ];
 
     /**
      * Relationships
