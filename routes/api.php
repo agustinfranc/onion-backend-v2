@@ -22,9 +22,9 @@ use App\Http\Controllers\RubroController;
 */
 
 Route::middleware('guest')->group(function () {
-    Route::post('/token', [LoginController::class, 'authenticate'])->name('login');
+    Route::post('/token', [LoginController::class, 'authenticate'])->name('api-login');
 
-    Route::post('/register', [RegisterController::class, 'register'])->name('register');
+    Route::post('/register', [RegisterController::class, 'register'])->name('api-register');
 
     Route::get('/commerces', [CommerceController::class, 'index']);
     Route::get('/commerces/{commerce}', [CommerceController::class, 'show'])->whereNumber('commerce');
@@ -43,7 +43,7 @@ Route::middleware(['auth:sanctum', 'authorized'])->group(function () {
     Route::prefix('/auth')->group(function () {
         Route::get('/me', [LoginController::class, 'me'])->name('me');
 
-        Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+        Route::post('/logout', [LoginController::class, 'logout'])->name('api-logout');
 
         Route::apiResource('commerces', CommerceController::class);
 
