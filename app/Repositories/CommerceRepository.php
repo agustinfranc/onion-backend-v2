@@ -24,7 +24,7 @@ class CommerceRepository
         return $commerce->load(['branches', 'currency', 'rubros' => function (BelongsToMany $query) use ($commerce) {
             return $query->with(['subrubros' => function (HasMany $query) use ($commerce) {
                 return $query->with(['products' => function (HasMany $query) use ($commerce) {
-                    return $query->with(['product_hashtags', 'product_prices'])->where('commerce_id', $commerce->id);   // me trae los productos solo de ese comercio
+                    return $query->with(['product_hashtags', 'product_prices'])->where('commerce_id', $commerce->id)->orderBy('code');   // me trae los productos solo de ese comercio
                 }, 'commerces' => function (BelongsToMany $query) use ($commerce) {
                     return $query->where('id', $commerce->id);   // me trae la tabla pivot de commerces_subrubros
                 }])
