@@ -22,20 +22,26 @@ class CommerceRepository
         }
 
         return $commerce->load(['branches', 'currency', 'rubros' => function (BelongsToMany $query) use ($commerce) {
-            return $query->with(['subrubros' => function (HasMany $query) use ($commerce) {
-                return $query->with(['products' => function (HasMany $query) use ($commerce) {
-                    return $query->with(['product_hashtags', 'product_prices'])->where('commerce_id', $commerce->id)->orderBy('code');   // me trae los productos solo de ese comercio
-                }, 'commerces' => function (BelongsToMany $query) use ($commerce) {
-                    return $query->where('id', $commerce->id);   // me trae la tabla pivot de commerces_subrubros
+            return $query->select(['id', 'name', 'link_name'])
+                ->with(['subrubros' => function (HasMany $query) use ($commerce) {
+                    return $query
+                        ->select(['id', 'rubro_id', 'name', 'link_name', 'is_general'])
+                        ->with(['products' => function (HasMany $query) use ($commerce) {
+                            return $query
+                                ->select(['id', 'name', 'description', 'price', 'avatar', 'avatar_dirname', 'disabled', 'commerce_id', 'subrubro_id'])
+                                ->with(['product_hashtags', 'product_prices'])->where('commerce_id', $commerce->id)
+                                ->orderBy('code');   // me trae los productos solo de ese comercio
+                        }, 'commerces' => function (BelongsToMany $query) use ($commerce) {
+                            return $query->where('id', $commerce->id);   // me trae la tabla pivot de commerces_subrubros
+                        }])
+                        ->whereHas('commerces', function (Builder $query) use ($commerce) {
+                            return $query->where('commerce_id', $commerce->id);   // me trae los subrubros solo de ese comercio
+                        })
+                        ->whereHas('products', function (Builder $query) use ($commerce) {
+                            return $query->where('commerce_id', $commerce->id);
+                        })
+                        ->orderBy('sort');
                 }])
-                    ->whereHas('commerces', function (Builder $query) use ($commerce) {
-                        return $query->where('commerce_id', $commerce->id);   // me trae los subrubros solo de ese comercio
-                    })
-                    ->whereHas('products', function (Builder $query) use ($commerce) {
-                        return $query->where('commerce_id', $commerce->id);
-                    })
-                    ->orderBy('sort');
-            }])
                 ->whereHas('subrubros', function (Builder $query) use ($commerce) {
                     return $query->whereHas('commerces', function (Builder $query) use ($commerce) {
                         return $query->where('commerce_id', $commerce->id);   // me trae los subrubros solo de ese comercio
