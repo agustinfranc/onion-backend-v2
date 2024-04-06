@@ -28,4 +28,9 @@ class CommerceBranch extends Model
     {
         return $this->belongsTo(Commerce::class);
     }
+
+    public function commerce_branch_order_time_options()
+    {
+        return $this->hasMany(CommerceBranchOrderTimeOption::class);
+    }
 }

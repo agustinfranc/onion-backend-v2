@@ -21,7 +21,7 @@ class CommerceRepository
             return $commerce;
         }
 
-        return $commerce->load(['branches', 'currency', 'rubros' => function (BelongsToMany $query) use ($commerce) {
+        return $commerce->load(['branches.commerce_branch_order_time_options', 'currency', 'rubros' => function (BelongsToMany $query) use ($commerce) {
             return $query->select(['id', 'name', 'link_name'])
                 ->with(['subrubros' => function (HasMany $query) use ($commerce) {
                     return $query
