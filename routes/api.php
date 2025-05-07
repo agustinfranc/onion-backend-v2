@@ -34,6 +34,8 @@ Route::middleware('guest')->group(function () {
         Route::get('/all', [CommerceController::class, 'showByName'])->name('showByName');
     });
 
+    Route::get('/commerces/{commerce}/products', [ProductController::class, 'index'])->name('guest.products.index');
+
     Route::get('/products/{product}', [ProductController::class, 'show'])->name('guest.products.show');
 
     Route::post('/checkout/preferences', [CheckoutController::class, 'generatePreference'])->name('checkout.preferences.generatePreference');
